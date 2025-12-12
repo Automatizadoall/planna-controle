@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://iktbxftzytfjeizrdbup.supabase.co/rest/v1/rpc/get_user_by_phone",
+        "authentication": "noAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "COLE_SUA_NOVA_SERVICE_KEY_AQUI"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer COLE_SUA_NOVA_SERVICE_KEY_AQUI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{{ JSON.stringify({ p_phone: $json.phone }) }}",
+        "options": {}
+      },
+      "id": "buscar-usuario",
+      "name": "Buscar Usuário",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [600, 300]
+    }
+  ],
+  "connections": {},
+  "pinData": {}
+}
+
+

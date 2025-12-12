@@ -1,0 +1,146 @@
+; Workflow Status Template
+
+# This tracks progress through BMM methodology Analysis, Planning, and Solutioning phases.
+# Implementation phase is tracked separately in sprint-status.yaml
+
+# STATUS DEFINITIONS:
+# ==================
+# Initial Status (before completion):
+#   - required: Must be completed to progress
+#   - optional: Can be completed but not required
+#   - recommended: Strongly suggested but not required
+#   - conditional: Required only if certain conditions met (e.g., if_has_ui)
+#
+# Completion Status:
+#   - {file-path}: File created/found (e.g., "docs/product-brief.md")
+#   - skipped: Optional/conditional workflow that was skipped
+
+generated: "2025-11-30"
+project: "mentoria"
+project_type: "software"
+selected_track: "bmad-method"
+field_type: "greenfield"
+workflow_path: "method-greenfield.yaml"
+
+workflow_status:
+  # Phase 0: Discovery (Optional)
+  - phase: 0
+    name: "Discovery (Optional)"
+    workflows:
+      - id: "brainstorm-project"
+        name: "Brainstorm Project"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:brainstorm-project"
+        status: "optional"
+        description: "Creative exploration and ideation"
+
+      - id: "research"
+        name: "Research"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:research"
+        status: "optional"
+        description: "Technical/competitive analysis"
+
+      - id: "product-brief"
+        name: "Product Brief"
+        agent: "analyst"
+        command: "/bmad:bmm:workflows:product-brief"
+        status: "docs/sprint-artifacts/personal_finance_control_app_project_brief.md"
+        description: "Strategic product planning (COMPLETED)"
+
+  # Phase 1: Planning
+  - phase: 1
+    name: "Planning"
+    workflows:
+      - id: "prd"
+        name: "Product Requirements Document"
+        agent: "pm"
+        command: "/bmad:bmm:workflows:prd"
+        status: "docs/sprint-artifacts/prd.md"
+        description: "Complete PRD with FRs and NFRs (COMPLETED)"
+
+      - id: "validate-prd"
+        name: "Validate PRD"
+        agent: "pm"
+        command: "/bmad:bmm:workflows:validate-prd"
+        status: "optional"
+        description: "Quality check for PRD completeness"
+
+      - id: "create-design"
+        name: "UX Design"
+        agent: "ux-designer"
+        command: "/bmad:bmm:workflows:create-ux-design"
+        status: "docs/sprint-artifacts/ux-design-specification.md"
+        description: "UI/UX design (COMPLETED)"
+
+  # Phase 2: Solutioning
+  - phase: 2
+    name: "Solutioning"
+    workflows:
+      - id: "create-architecture"
+        name: "System Architecture"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:architecture"
+        status: "docs/sprint-artifacts/architecture.md"
+        description: "Complete system design (COMPLETED)"
+
+      - id: "create-epics-and-stories"
+        name: "Epics & Stories"
+        agent: "pm"
+        command: "/bmad:bmm:workflows:create-epics-and-stories"
+        status: "docs/sprint-artifacts/epics-and-stories.md"
+        description: "Break down PRD into implementable work items (COMPLETED)"
+
+      - id: "test-design"
+        name: "Test Design"
+        agent: "tea"
+        command: "/bmad:bmm:workflows:test-design"
+        status: "recommended"
+        description: "System-level testability review"
+
+      - id: "validate-architecture"
+        name: "Validate Architecture"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:validate-architecture"
+        status: "optional"
+        description: "Quality check for architecture"
+
+      - id: "implementation-readiness"
+        name: "Implementation Readiness"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:implementation-readiness"
+        status: "docs/sprint-artifacts/implementation-readiness-report-2025-12-04.md"
+        description: "Gate check - validates cohesion before implementation (RE-VALIDATED - 93% READY)"
+
+  # Phase 3: Implementation
+  - phase: 3
+    name: "Implementation"
+    workflows:
+      - id: "sprint-planning"
+        name: "Sprint Planning"
+        agent: "sm"
+        command: "/bmad:bmm:workflows:sprint-planning"
+        status: "docs/sprint-artifacts/sprint-status.yaml"
+        description: "Creates sprint plan - work tracked in sprint-status.yaml (COMPLETED)"
+
+      - id: "epic-tech-context"
+        name: "Epic Tech Context"
+        agent: "architect"
+        command: "/bmad:bmm:workflows:epic-tech-context"
+        status: "docs/sprint-artifacts/tech-spec-epic-1.md"
+        description: "Context each epic before drafting stories (Epic 1 COMPLETED)"
+
+      - id: "create-story"
+        name: "Create Story"
+        agent: "sm"
+        command: "/bmad:bmm:workflows:create-story"
+        status: "required"
+        description: "Draft individual stories for development"
+
+      - id: "dev-story"
+        name: "Develop Story"
+        agent: "dev"
+        command: "/bmad:bmm:workflows:dev-story"
+        status: "required"
+        description: "Implement story with code"
+

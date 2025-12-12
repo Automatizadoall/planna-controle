@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direções de Design - Personal Finance Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #050505;
+      color: #fafafa;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid #222;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #10b981, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .nav-pills {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-pill {
+      padding: 0.5rem 1rem;
+      border: 1px solid #333;
+      border-radius: 999px;
+      background: transparent;
+      color: #888;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-pill:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .nav-pill.active {
+      background: #10b981;
+      border-color: #10b981;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .directions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+    }
+
+    .direction-card {
+      background: #0a0a0a;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid #1a1a1a;
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .direction-card:hover {
+      border-color: #333;
+      transform: translateY(-8px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .direction-card.selected {
+      border-color: #10b981;
+      box-shadow: 0 0 40px rgba(16, 185, 129, 0.2);
+    }
+
+    .direction-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .direction-info h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .direction-info p {
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    .direction-tag {
+      padding: 0.25rem 0.75rem;
+      background: #1a1a1a;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .direction-tag.recommended {
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .mockup-container {
+      position: relative;
+      background: #111;
+      padding: 1rem;
+    }
+
+    .mockup {
+      background: var(--mockup-bg, #0a0a0a);
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    /* Mockup 1: Dense Dashboard */
+    .mockup-dense {
+      --mockup-bg: #0a0a0a;
+    }
+
+    .mockup-dense .mock-header {
+      background: #111;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .mockup-dense .mock-logo {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #10b981;
+    }
+
+    .mockup-dense .mock-nav {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .mockup-dense .mock-nav-item {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.7rem;
+      color: #666;
+      border-radius: 4px;
+    }
+
+    .mockup-dense .mock-nav-item.active {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .mockup-dense .mock-body {
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+
+    .mockup-dense .stat-card {
+      background: #111;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #1a1a1a;
+    }
+
+    .mockup-dense .stat-label {
+      font-size: 0.65rem;
+      color: #666;
+      margin-bottom: 0.25rem;
+    }
+
+    .mockup-dense .stat-value {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .mockup-dense .stat-value.green { color: #10b981; }
+    .mockup-dense .stat-value.red { color: #ef4444; }
+
+    .mockup-dense .chart-area {
+      grid-column: span 2;
+      background: #111;
+      border-radius: 8px;
+      border: 1px solid #1a1a1a;
+      padding: 0.75rem;
+      min-height: 120px;
+    }
+
+    .mockup-dense .chart-title {
+      font-size: 0.7rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .mockup-dense .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 80px;
+    }
+
+    .mockup-dense .chart-bar {
+      flex: 1;
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      border-radius: 2px;
+    }
+
+    .mockup-dense .transactions {
+      grid-column: span 4;
+      background: #111;
+      border-radius: 8px;
+      border: 1px solid #1a1a1a;
+      padding: 0.75rem;
+    }
+
+    .mockup-dense .tx-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #1a1a1a;
+      font-size: 0.75rem;
+    }
+
+    .mockup-dense .tx-row:last-child {
+      border-bottom: none;
+    }
+
+    /* Mockup 2: Spacious Explorer */
+    .mockup-spacious {
+      --mockup-bg: #fafafa;
+    }
+
+    .mockup-spacious .mock-sidebar {
+      width: 60px;
+      background: #fff;
+      border-right: 1px solid #e5e5e5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+      gap: 1.5rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .mockup-spacious .mock-icon {
+      width: 32px;
+      height: 32px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .mockup-spacious .mock-icon.active {
+      background: #10b981;
+    }
+
+    .mockup-spacious .mock-content {
+      margin-left: 60px;
+      padding: 2rem;
+    }
+
+    .mockup-spacious .welcome-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .mockup-spacious .welcome-sub {
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+
+    .mockup-spacious .big-stat {
+      text-align: center;
+      padding: 2rem;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .mockup-spacious .big-stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #1a1a1a;
+    }
+
+    .mockup-spacious .big-stat-label {
+      color: #888;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .mockup-spacious .cards-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .mockup-spacious .mini-card {
+      flex: 1;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .mockup-spacious .mini-card-label {
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    .mockup-spacious .mini-card-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .mockup-spacious .mini-card-value.green { color: #10b981; }
+    .mockup-spacious .mini-card-value.red { color: #ef4444; }
+
+    /* Mockup 3: Card-Based */
+    .mockup-cards {
+      --mockup-bg: #0f0f0f;
+    }
+
+    .mockup-cards .mock-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .mockup-cards .feature-card {
+      background: linear-gradient(145deg, #1a1a1a 0%, #111 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid #222;
+    }
+
+    .mockup-cards .feature-card.hero {
+      grid-column: span 2;
+      background: linear-gradient(145deg, #10b981 0%, #059669 100%);
+      color: #fff;
+    }
+
+    .mockup-cards .feature-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .mockup-cards .feature-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .mockup-cards .feature-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .mockup-cards .feature-card.hero .feature-value {
+      font-size: 2rem;
+    }
+
+    /* Mockup 4: Minimal Focus */
+    .mockup-minimal {
+      --mockup-bg: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      text-align: center;
+    }
+
+    .mockup-minimal .focus-amount {
+      font-size: 4rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      background: linear-gradient(90deg, #fff 0%, #888 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .mockup-minimal .focus-label {
+      color: #444;
+      font-size: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .mockup-minimal .mini-stats {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .mockup-minimal .mini-stat {
+      text-align: center;
+    }
+
+    .mockup-minimal .mini-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .mockup-minimal .mini-stat-value.green { color: #10b981; }
+    .mockup-minimal .mini-stat-value.red { color: #ef4444; }
+
+    .mockup-minimal .mini-stat-label {
+      font-size: 0.75rem;
+      color: #444;
+      margin-top: 0.25rem;
+    }
+
+    /* Mockup 5: Bottom Nav Mobile */
+    .mockup-mobile {
+      --mockup-bg: #0a0a0a;
+      max-width: 280px;
+      margin: 0 auto;
+      border-radius: 24px;
+      border: 3px solid #333;
+      overflow: hidden;
+    }
+
+    .mockup-mobile .mobile-header {
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mockup-mobile .mobile-greeting {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .mockup-mobile .mobile-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+      border-radius: 50%;
+    }
+
+    .mockup-mobile .mobile-balance {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .mockup-mobile .balance-label {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    .mockup-mobile .balance-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0.5rem 0;
+    }
+
+    .mockup-mobile .balance-change {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+
+    .mockup-mobile .mobile-cards {
+      padding: 0 1rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .mockup-mobile .mobile-stat {
+      flex: 1;
+      background: #111;
+      padding: 1rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .mockup-mobile .mobile-stat-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .mockup-mobile .mobile-stat-value.green { color: #10b981; }
+    .mockup-mobile .mobile-stat-value.red { color: #ef4444; }
+
+    .mockup-mobile .mobile-stat-label {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+
+    .mockup-mobile .mobile-bottom {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background: #111;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .mockup-mobile .nav-icon {
+      width: 24px;
+      height: 24px;
+      background: #333;
+      border-radius: 6px;
+    }
+
+    .mockup-mobile .nav-icon.active {
+      background: #10b981;
+    }
+
+    .mockup-mobile .fab {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-radius: 50%;
+      margin-top: -24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Mockup 6: Data-Heavy */
+    .mockup-data {
+      --mockup-bg: #0d1117;
+    }
+
+    .mockup-data .data-header {
+      padding: 0.75rem 1rem;
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .mockup-data .data-tabs {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .mockup-data .data-tab {
+      font-size: 0.8rem;
+      color: #8b949e;
+      padding-bottom: 0.5rem;
+    }
+
+    .mockup-data .data-tab.active {
+      color: #fff;
+      border-bottom: 2px solid #10b981;
+    }
+
+    .mockup-data .data-content {
+      padding: 1rem;
+    }
+
+    .mockup-data .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+    }
+
+    .mockup-data .data-table th {
+      text-align: left;
+      padding: 0.5rem;
+      color: #8b949e;
+      font-weight: 500;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .mockup-data .data-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #21262d;
+      color: #c9d1d9;
+    }
+
+    .mockup-data .data-table .amount.positive {
+      color: #3fb950;
+    }
+
+    .mockup-data .data-table .amount.negative {
+      color: #f85149;
+    }
+
+    .mockup-data .data-chart {
+      margin-top: 1rem;
+      background: #161b22;
+      border-radius: 8px;
+      padding: 1rem;
+      height: 100px;
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .mockup-data .data-bar {
+      flex: 1;
+      background: #238636;
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Mockup 7: Gradient Heavy */
+    .mockup-gradient {
+      --mockup-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
+      background: var(--mockup-bg);
+    }
+
+    .mockup-gradient .grad-header {
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .mockup-gradient .grad-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .mockup-gradient .grad-balance {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #fff, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .mockup-gradient .grad-cards {
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+    }
+
+    .mockup-gradient .grad-card {
+      flex: 1;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .mockup-gradient .grad-card-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .mockup-gradient .grad-card-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .mockup-gradient .grad-card-label {
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 0.25rem;
+    }
+
+    .mockup-gradient .grad-progress {
+      margin: 1.5rem;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .mockup-gradient .grad-progress-title {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .mockup-gradient .grad-progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .mockup-gradient .grad-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6, #ec4899);
+      border-radius: 4px;
+      width: 65%;
+    }
+
+    /* Mockup 8: Split View */
+    .mockup-split {
+      --mockup-bg: #0a0a0a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 400px;
+    }
+
+    .mockup-split .split-left {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .mockup-split .split-left h3 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .mockup-split .split-left p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mockup-split .split-amount {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .mockup-split .split-right {
+      padding: 1.5rem;
+      background: #0a0a0a;
+    }
+
+    .mockup-split .split-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .mockup-split .split-section-title {
+      font-size: 0.75rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .mockup-split .split-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .mockup-split .split-item-name {
+      font-size: 0.875rem;
+    }
+
+    .mockup-split .split-item-value {
+      font-weight: 600;
+    }
+
+    .mockup-split .split-item-value.green { color: #10b981; }
+    .mockup-split .split-item-value.red { color: #ef4444; }
+
+    .select-direction {
+      padding: 1rem;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .select-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 2px dashed #333;
+      background: transparent;
+      color: #666;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .select-btn:hover {
+      border-color: #10b981;
+      color: #10b981;
+    }
+
+    .direction-card.selected .select-btn {
+      border-style: solid;
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .responsive-toggle {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 0.5rem;
+      background: #1a1a1a;
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid #333;
+      z-index: 1000;
+    }
+
+    .toggle-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      color: #888;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      color: #fff;
+    }
+
+    .toggle-btn.active {
+      background: #10b981;
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .directions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎨 Direções de Design</h1>
+    <p>Personal Finance Control — Explore diferentes abordagens visuais</p>
+    <div class="nav-pills">
+      <button class="nav-pill active" onclick="filterDirection('all')">Todas</button>
+      <button class="nav-pill" onclick="filterDirection('dark')">Dark Mode</button>
+      <button class="nav-pill" onclick="filterDirection('light')">Light Mode</button>
+      <button class="nav-pill" onclick="filterDirection('mobile')">Mobile First</button>
+      <button class="nav-pill" onclick="filterDirection('data')">Data Heavy</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="directions-grid">
+      
+      <!-- Direction 1: Dense Dashboard -->
+      <div class="direction-card selected" data-direction="dark data" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>📊 Dense Dashboard</h3>
+            <p>Máxima informação, mínimo espaço</p>
+          </div>
+          <span class="direction-tag recommended">✓ Recomendado</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-dense">
+            <div class="mock-header">
+              <span class="mock-logo">💰 Financeiro</span>
+              <div class="mock-nav">
+                <span class="mock-nav-item active">Dashboard</span>
+                <span class="mock-nav-item">Transações</span>
+                <span class="mock-nav-item">Metas</span>
+              </div>
+            </div>
+            <div class="mock-body">
+              <div class="stat-card">
+                <div class="stat-label">Saldo Total</div>
+                <div class="stat-value">R$ 15.847</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value green">R$ 5.000</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value red">R$ 3.240</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Economia</div>
+                <div class="stat-value green">R$ 1.760</div>
+              </div>
+              <div class="chart-area">
+                <div class="chart-title">Fluxo Mensal</div>
+                <div class="chart-bars">
+                  <div class="chart-bar" style="height: 60%"></div>
+                  <div class="chart-bar" style="height: 80%"></div>
+                  <div class="chart-bar" style="height: 45%"></div>
+                  <div class="chart-bar" style="height: 90%"></div>
+                  <div class="chart-bar" style="height: 70%"></div>
+                  <div class="chart-bar" style="height: 55%"></div>
+                </div>
+              </div>
+              <div class="chart-area">
+                <div class="chart-title">Orçamentos</div>
+                <div style="margin-top: 0.5rem;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color: #666;">
+                    <span>🍔 Alimentação</span>
+                    <span style="color: #f59e0b;">80%</span>
+                  </div>
+                  <div style="height: 6px; background: #1a1a1a; border-radius: 3px; margin: 4px 0;">
+                    <div style="width: 80%; height: 100%; background: #f59e0b; border-radius: 3px;"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="transactions">
+                <div class="chart-title">Últimas Transações</div>
+                <div class="tx-row">
+                  <span>🍕 Pizzaria</span>
+                  <span style="color: #ef4444;">-R$ 68</span>
+                </div>
+                <div class="tx-row">
+                  <span>💼 Salário</span>
+                  <span style="color: #10b981;">+R$ 5.000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">✓ Direção Selecionada</button>
+        </div>
+      </div>
+
+      <!-- Direction 2: Spacious Explorer -->
+      <div class="direction-card" data-direction="light" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>☁️ Spacious Explorer</h3>
+            <p>Respiração visual, foco no essencial</p>
+          </div>
+          <span class="direction-tag">Light Mode</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-spacious" style="position: relative; min-height: 400px;">
+            <div class="mock-sidebar">
+              <div class="mock-icon active"></div>
+              <div class="mock-icon"></div>
+              <div class="mock-icon"></div>
+              <div class="mock-icon"></div>
+            </div>
+            <div class="mock-content">
+              <div class="welcome-text">Olá, BMad! 👋</div>
+              <div class="welcome-sub">Suas finanças estão em dia</div>
+              <div class="big-stat">
+                <div class="big-stat-value">R$ 15.847,32</div>
+                <div class="big-stat-label">Patrimônio Total</div>
+              </div>
+              <div class="cards-row">
+                <div class="mini-card">
+                  <div class="mini-card-label">Receitas</div>
+                  <div class="mini-card-value green">R$ 5.000</div>
+                </div>
+                <div class="mini-card">
+                  <div class="mini-card-label">Despesas</div>
+                  <div class="mini-card-value red">R$ 3.240</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 3: Card-Based -->
+      <div class="direction-card" data-direction="dark" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>🃏 Card-Based</h3>
+            <p>Informações em blocos modulares</p>
+          </div>
+          <span class="direction-tag">Modular</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-cards">
+            <div class="mock-grid">
+              <div class="feature-card hero">
+                <div class="feature-icon">💰</div>
+                <div class="feature-title">Patrimônio Total</div>
+                <div class="feature-value">R$ 15.847,32</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <div class="feature-title">Receitas</div>
+                <div class="feature-value" style="color: #10b981;">R$ 5.000</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📉</div>
+                <div class="feature-title">Despesas</div>
+                <div class="feature-value" style="color: #ef4444;">R$ 3.240</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Meta Viagem</div>
+                <div class="feature-value">25%</div>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Orçamento</div>
+                <div class="feature-value">65%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 4: Minimal Focus -->
+      <div class="direction-card" data-direction="dark" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>🎯 Minimal Focus</h3>
+            <p>Uma informação de cada vez</p>
+          </div>
+          <span class="direction-tag">Minimalista</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-minimal">
+            <div class="focus-amount">R$ 15.847</div>
+            <div class="focus-label">Seu patrimônio total</div>
+            <div class="mini-stats">
+              <div class="mini-stat">
+                <div class="mini-stat-value green">+R$ 5.000</div>
+                <div class="mini-stat-label">Receitas</div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat-value red">-R$ 3.240</div>
+                <div class="mini-stat-label">Despesas</div>
+              </div>
+              <div class="mini-stat">
+                <div class="mini-stat-value green">+R$ 1.760</div>
+                <div class="mini-stat-label">Economia</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 5: Mobile First -->
+      <div class="direction-card" data-direction="dark mobile" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>📱 Mobile First</h3>
+            <p>Otimizado para smartphones</p>
+          </div>
+          <span class="direction-tag">Mobile</span>
+        </div>
+        <div class="mockup-container" style="display: flex; justify-content: center;">
+          <div class="mockup mockup-mobile">
+            <div class="mobile-header">
+              <div class="mobile-greeting">Olá, BMad!</div>
+              <div class="mobile-avatar"></div>
+            </div>
+            <div class="mobile-balance">
+              <div class="balance-label">Saldo Total</div>
+              <div class="balance-value">R$ 15.847</div>
+              <span class="balance-change">↑ +12% este mês</span>
+            </div>
+            <div class="mobile-cards">
+              <div class="mobile-stat">
+                <div class="mobile-stat-value green">R$ 5.000</div>
+                <div class="mobile-stat-label">Receitas</div>
+              </div>
+              <div class="mobile-stat">
+                <div class="mobile-stat-value red">R$ 3.240</div>
+                <div class="mobile-stat-label">Despesas</div>
+              </div>
+            </div>
+            <div class="mobile-bottom">
+              <div class="nav-icon active"></div>
+              <div class="nav-icon"></div>
+              <div class="fab">+</div>
+              <div class="nav-icon"></div>
+              <div class="nav-icon"></div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 6: Data Heavy -->
+      <div class="direction-card" data-direction="dark data" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>📈 Data Heavy</h3>
+            <p>Para quem ama números e tabelas</p>
+          </div>
+          <span class="direction-tag">Analítico</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-data">
+            <div class="data-header">
+              <div class="data-tabs">
+                <span class="data-tab active">Transações</span>
+                <span class="data-tab">Relatórios</span>
+                <span class="data-tab">Análise</span>
+              </div>
+            </div>
+            <div class="data-content">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>03/12</td>
+                    <td>Supermercado</td>
+                    <td>🍔 Alimentação</td>
+                    <td class="amount negative">-R$ 120</td>
+                  </tr>
+                  <tr>
+                    <td>02/12</td>
+                    <td>Salário</td>
+                    <td>💼 Receita</td>
+                    <td class="amount positive">+R$ 5.000</td>
+                  </tr>
+                  <tr>
+                    <td>01/12</td>
+                    <td>Netflix</td>
+                    <td>📱 Assinaturas</td>
+                    <td class="amount negative">-R$ 39</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="data-chart">
+                <div class="data-bar" style="height: 30%"></div>
+                <div class="data-bar" style="height: 50%"></div>
+                <div class="data-bar" style="height: 80%"></div>
+                <div class="data-bar" style="height: 60%"></div>
+                <div class="data-bar" style="height: 45%"></div>
+                <div class="data-bar" style="height: 70%"></div>
+                <div class="data-bar" style="height: 55%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 7: Gradient Heavy -->
+      <div class="direction-card" data-direction="dark" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>🌈 Gradient Rich</h3>
+            <p>Visual impactante com gradientes</p>
+          </div>
+          <span class="direction-tag">Premium</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-gradient">
+            <div class="grad-header">
+              <div class="grad-title">💰 Suas Finanças</div>
+              <div class="grad-balance">R$ 15.847</div>
+            </div>
+            <div class="grad-cards">
+              <div class="grad-card">
+                <div class="grad-card-icon">📈</div>
+                <div class="grad-card-value" style="color: #34d399;">R$ 5.000</div>
+                <div class="grad-card-label">Receitas</div>
+              </div>
+              <div class="grad-card">
+                <div class="grad-card-icon">📉</div>
+                <div class="grad-card-value" style="color: #fb7185;">R$ 3.240</div>
+                <div class="grad-card-label">Despesas</div>
+              </div>
+            </div>
+            <div class="grad-progress">
+              <div class="grad-progress-title">🎯 Meta Viagem Europa</div>
+              <div class="grad-progress-bar">
+                <div class="grad-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+      <!-- Direction 8: Split View -->
+      <div class="direction-card" data-direction="dark" onclick="selectDirection(this)">
+        <div class="direction-header">
+          <div class="direction-info">
+            <h3>⚡ Split View</h3>
+            <p>Destaque para o saldo principal</p>
+          </div>
+          <span class="direction-tag">Bold</span>
+        </div>
+        <div class="mockup-container">
+          <div class="mockup mockup-split">
+            <div class="split-left">
+              <h3>Patrimônio</h3>
+              <p>Seu total acumulado</p>
+              <div class="split-amount">R$ 15.847</div>
+            </div>
+            <div class="split-right">
+              <div class="split-section">
+                <div class="split-section-title">Este Mês</div>
+                <div class="split-item">
+                  <span class="split-item-name">Receitas</span>
+                  <span class="split-item-value green">+R$ 5.000</span>
+                </div>
+                <div class="split-item">
+                  <span class="split-item-name">Despesas</span>
+                  <span class="split-item-value red">-R$ 3.240</span>
+                </div>
+              </div>
+              <div class="split-section">
+                <div class="split-section-title">Orçamentos</div>
+                <div class="split-item">
+                  <span class="split-item-name">🍔 Alimentação</span>
+                  <span class="split-item-value" style="color: #f59e0b;">80%</span>
+                </div>
+                <div class="split-item">
+                  <span class="split-item-name">🚗 Transporte</span>
+                  <span class="split-item-value green">35%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="select-direction">
+          <button class="select-btn">Selecionar Direção</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="responsive-toggle">
+    <button class="toggle-btn active" onclick="setView('desktop')">🖥️ Desktop</button>
+    <button class="toggle-btn" onclick="setView('tablet')">📱 Tablet</button>
+    <button class="toggle-btn" onclick="setView('mobile')">📲 Mobile</button>
+  </div>
+
+  <script>
+    function selectDirection(card) {
+      document.querySelectorAll('.direction-card').forEach(c => {
+        c.classList.remove('selected');
+        c.querySelector('.select-btn').textContent = 'Selecionar Direção';
+      });
+      
+      card.classList.add('selected');
+      card.querySelector('.select-btn').textContent = '✓ Direção Selecionada';
+    }
+
+    function filterDirection(filter) {
+      document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.querySelectorAll('.direction-card').forEach(card => {
+        if (filter === 'all') {
+          card.style.display = 'block';
+        } else {
+          const tags = card.dataset.direction || '';
+          card.style.display = tags.includes(filter) ? 'block' : 'none';
+        }
+      });
+    }
+
+    function setView(view) {
+      document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      const grid = document.querySelector('.directions-grid');
+      
+      switch(view) {
+        case 'desktop':
+          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(450px, 1fr))';
+          break;
+        case 'tablet':
+          grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(350px, 1fr))';
+          break;
+        case 'mobile':
+          grid.style.gridTemplateColumns = '1fr';
+          break;
+      }
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,424 @@
+{
+  "name": "Planna - WhatsApp Transactions",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-transaction",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook WhatsApp",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "planna-whatsapp"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrai dados da mensagem do WhatsApp\n// Adapte conforme seu provider (Evolution API, Twilio, etc)\n\nconst body = $input.first().json;\n\n// Exemplo para Evolution API\nlet phone = body.data?.key?.remoteJid || body.from;\nlet message = body.data?.message?.conversation || \n              body.data?.message?.extendedTextMessage?.text ||\n              body.message || body.text;\n\n// Limpa o número de telefone\nif (phone) {\n  // Remove @s.whatsapp.net e caracteres especiais\n  phone = phone.replace('@s.whatsapp.net', '')\n               .replace('@c.us', '')\n               .replace(/[^0-9+]/g, '');\n  \n  // Adiciona + se não tiver\n  if (!phone.startsWith('+')) {\n    phone = '+' + phone;\n  }\n}\n\nreturn {\n  phone: phone,\n  message: message,\n  raw: body\n};"
+      },
+      "id": "extract-data",
+      "name": "Extrair Dados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/rpc/get_user_by_phone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ p_phone: $json.phone }) }}"
+      },
+      "id": "lookup-user",
+      "name": "Buscar Usuário",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "user-found",
+              "leftValue": "={{ $json.user_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-user",
+      "name": "Usuário Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [910, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse da mensagem para extrair dados da transação\n// Formatos aceitos:\n// \"gastei 50 mercado\" → expense\n// \"recebi 1000 salário\" → income\n// \"50.90 uber\" → expense (default)\n// \"entrada 500 freelance\" → income\n\nconst message = $('Extrair Dados').first().json.message?.toLowerCase() || '';\nconst userData = $input.first().json;\n\n// Palavras-chave para tipo\nconst incomeKeywords = ['recebi', 'recebido', 'entrada', 'ganho', 'ganhei', 'salário', 'salario', 'pix recebido'];\nconst expenseKeywords = ['gastei', 'gasto', 'paguei', 'comprei', 'saída', 'saida', 'débito', 'debito'];\n\n// Detecta tipo\nlet type = 'expense'; // default\nfor (const kw of incomeKeywords) {\n  if (message.includes(kw)) {\n    type = 'income';\n    break;\n  }\n}\n\n// Extrai valor (procura números com ou sem decimais)\nconst valueMatch = message.match(/(\\d+[.,]?\\d*)/); \nconst amount = valueMatch ? parseFloat(valueMatch[1].replace(',', '.')) : null;\n\n// Extrai descrição (remove valor e palavras-chave)\nlet description = message\n  .replace(/(\\d+[.,]?\\d*)/g, '')\n  .replace(new RegExp(incomeKeywords.join('|'), 'gi'), '')\n  .replace(new RegExp(expenseKeywords.join('|'), 'gi'), '')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nif (!description) {\n  description = type === 'income' ? 'Entrada via WhatsApp' : 'Despesa via WhatsApp';\n}\n\n// Data atual\nconst today = new Date().toISOString().split('T')[0];\n\nreturn {\n  user_id: userData.user_id,\n  account_id: userData.default_account_id,\n  account_name: userData.default_account_name,\n  full_name: userData.full_name,\n  type: type,\n  amount: amount,\n  description: description.charAt(0).toUpperCase() + description.slice(1),\n  date: today,\n  original_message: message,\n  is_valid: amount !== null && amount > 0\n};"
+      },
+      "id": "parse-transaction",
+      "name": "Processar Mensagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1130, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "valid-amount",
+              "leftValue": "={{ $json.is_valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "has-account",
+              "leftValue": "={{ $json.account_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-valid",
+      "name": "Dados Válidos?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1350, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SUPABASE_URL }}/rest/v1/transactions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.SUPABASE_SERVICE_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"account_id\": \"{{ $json.account_id }}\",\n  \"type\": \"{{ $json.type }}\",\n  \"amount\": {{ $json.amount }},\n  \"description\": \"{{ $json.description }}\",\n  \"date\": \"{{ $json.date }}\"\n}"
+      },
+      "id": "create-transaction",
+      "name": "Criar Transação",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1570, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Monta mensagem de confirmação\nconst tx = $('Processar Mensagem').first().json;\nconst created = $input.first().json;\n\nconst typeLabel = tx.type === 'income' ? '💰 Entrada' : '💸 Saída';\nconst amount = new Intl.NumberFormat('pt-BR', { \n  style: 'currency', \n  currency: 'BRL' \n}).format(tx.amount);\n\nconst message = `✅ *Transação registrada!*\n\n${typeLabel}\n📝 ${tx.description}\n💵 ${amount}\n🏦 ${tx.account_name}\n📅 ${tx.date}\n\n_Registrado via Planna_`;\n\nreturn {\n  phone: $('Extrair Dados').first().json.phone,\n  message: message,\n  transaction_id: created[0]?.id || created.id\n};"
+      },
+      "id": "success-message",
+      "name": "Mensagem Sucesso",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1790, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mensagem de erro - dados inválidos\nconst tx = $('Processar Mensagem').first().json;\nconst phone = $('Extrair Dados').first().json.phone;\n\nlet errorMsg = '❌ *Não consegui entender sua mensagem*\\n\\n';\n\nif (!tx.amount || tx.amount <= 0) {\n  errorMsg += '• Não encontrei um valor válido\\n';\n}\n\nif (!tx.account_id) {\n  errorMsg += '• Você não tem uma conta padrão definida\\n';\n}\n\nerrorMsg += `\\n📝 *Exemplos de uso:*\\n`;\nerrorMsg += `• \"gastei 50 mercado\"\\n`;\nerrorMsg += `• \"recebi 1000 salário\"\\n`;\nerrorMsg += `• \"45.90 uber\"\\n`;\nerrorMsg += `\\n_Acesse o app para configurar sua conta padrão_`;\n\nreturn {\n  phone: phone,\n  message: errorMsg\n};"
+      },
+      "id": "error-invalid",
+      "name": "Erro: Dados Inválidos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1570, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Mensagem de erro - usuário não encontrado\nconst phone = $('Extrair Dados').first().json.phone;\n\nconst message = `❌ *Número não cadastrado*\n\nO número ${phone} não está vinculado a nenhuma conta Planna.\n\n📱 *Para vincular:*\n1. Acesse o app Planna\n2. Vá em Configurações\n3. Adicione seu número de telefone\n\n_Após vincular, você poderá registrar transações por aqui!_`;\n\nreturn {\n  phone: phone,\n  message: message\n};"
+      },
+      "id": "error-not-found",
+      "name": "Erro: Usuário Não Encontrado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1130, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WHATSAPP_API_URL }}/message/sendText/{{ $env.WHATSAPP_INSTANCE }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.WHATSAPP_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.phone.replace('+', '') }}\",\n  \"text\": \"{{ $json.message.replace(/\"/g, '\\\\\"').replace(/\\n/g, '\\\\n') }}\"\n}"
+      },
+      "id": "send-whatsapp-1",
+      "name": "Enviar WhatsApp (Sucesso)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2010, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.WHATSAPP_API_URL }}/message/sendText/{{ $env.WHATSAPP_INSTANCE }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.WHATSAPP_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $json.phone.replace('+', '') }}\",\n  \"text\": \"{{ $json.message.replace(/\"/g, '\\\\\"').replace(/\\n/g, '\\\\n') }}\"\n}"
+      },
+      "id": "send-whatsapp-2",
+      "name": "Enviar WhatsApp (Erro)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1790, 350]
+    },
+    {
+      "parameters": {},
+      "id": "merge-errors",
+      "name": "Merge Erros",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [1570, 400]
+    }
+  ],
+  "connections": {
+    "Webhook WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Dados": {
+      "main": [
+        [
+          {
+            "node": "Buscar Usuário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Usuário": {
+      "main": [
+        [
+          {
+            "node": "Usuário Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usuário Existe?": {
+      "main": [
+        [
+          {
+            "node": "Processar Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro: Usuário Não Encontrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Dados Válidos?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados Válidos?": {
+      "main": [
+        [
+          {
+            "node": "Criar Transação",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro: Dados Inválidos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Transação": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Sucesso": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp (Sucesso)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Erro: Dados Inválidos": {
+      "main": [
+        [
+          {
+            "node": "Merge Erros",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Erro: Usuário Não Encontrado": {
+      "main": [
+        [
+          {
+            "node": "Merge Erros",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Erros": {
+      "main": [
+        [
+          {
+            "node": "Enviar WhatsApp (Erro)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "Planna",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "name": "WhatsApp",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 1,
+  "pinData": {}
+}
+
+

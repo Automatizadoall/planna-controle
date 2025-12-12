@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temas de Cores - Personal Finance Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0a0a0a;
+      color: #fafafa;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: #888;
+      font-size: 1rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .theme-selector {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #333;
+      border-radius: 12px;
+      background: #1a1a1a;
+      color: #fafafa;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-btn:hover {
+      border-color: #555;
+      transform: translateY(-2px);
+    }
+
+    .theme-btn.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .theme-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    .theme-card {
+      background: #141414;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid #222;
+      transition: all 0.3s ease;
+    }
+
+    .theme-card:hover {
+      border-color: #444;
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-card.selected {
+      border-color: #10b981;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+    }
+
+    .theme-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #222;
+    }
+
+    .theme-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .theme-header p {
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    .color-palette {
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+
+    .color-swatch {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.1);
+      z-index: 10;
+    }
+
+    .color-swatch::after {
+      content: attr(data-name);
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      color: #666;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .color-swatch:hover::after {
+      opacity: 1;
+    }
+
+    .ui-preview {
+      padding: 1.5rem;
+      background: var(--bg);
+      border-top: 1px solid #222;
+    }
+
+    .preview-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .preview-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .preview-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .badge-danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+    }
+
+    .preview-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .stat-item {
+      padding: 0.75rem;
+      background: var(--muted);
+      border-radius: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .stat-value.income {
+      color: var(--success);
+    }
+
+    .stat-value.expense {
+      color: var(--danger);
+    }
+
+    .preview-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      background: var(--muted);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .preview-progress {
+      margin-top: 1rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--muted);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-fill.warning {
+      background: var(--warning);
+    }
+
+    .progress-fill.success {
+      background: var(--success);
+    }
+
+    .preview-input {
+      margin-top: 1rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .input {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.875rem;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    .comparison-mode {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #141414;
+      border-radius: 16px;
+      border: 1px solid #222;
+    }
+
+    .comparison-mode h3 {
+      margin-bottom: 1rem;
+      font-size: 1.125rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .select-btn {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: 2px dashed #333;
+      background: transparent;
+      color: #888;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .select-btn:hover {
+      border-color: #10b981;
+      color: #10b981;
+    }
+
+    .theme-card.selected .select-btn {
+      border-style: solid;
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .themes-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .color-palette {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🎨 Temas de Cores</h1>
+    <p>Personal Finance Control — Escolha o tema que melhor representa sua experiência</p>
+  </div>
+
+  <div class="container">
+    <div class="theme-selector">
+      <button class="theme-btn active" onclick="showAll()">
+        Todos os Temas
+      </button>
+      <button class="theme-btn" onclick="filterTheme('emerald')">
+        <span class="theme-dot" style="background: #10b981"></span>
+        Emerald
+      </button>
+      <button class="theme-btn" onclick="filterTheme('ocean')">
+        <span class="theme-dot" style="background: #0ea5e9"></span>
+        Ocean
+      </button>
+      <button class="theme-btn" onclick="filterTheme('purple')">
+        <span class="theme-dot" style="background: #8b5cf6"></span>
+        Purple
+      </button>
+      <button class="theme-btn" onclick="filterTheme('sunset')">
+        <span class="theme-dot" style="background: #f97316"></span>
+        Sunset
+      </button>
+    </div>
+
+    <div class="themes-grid">
+      <!-- Theme 1: Emerald (Recomendado) -->
+      <div class="theme-card selected" data-theme="emerald" style="
+        --bg: #0a0a0a;
+        --card: #141414;
+        --border: #262626;
+        --muted: #1a1a1a;
+        --text: #fafafa;
+        --text-muted: #a1a1aa;
+        --primary: #10b981;
+        --success: #10b981;
+        --success-bg: rgba(16, 185, 129, 0.15);
+        --danger: #ef4444;
+        --danger-bg: rgba(239, 68, 68, 0.15);
+        --warning: #f59e0b;
+        --ring: rgba(16, 185, 129, 0.3);
+      ">
+        <div class="theme-header">
+          <h3>🌿 Emerald Dark</h3>
+          <p>Recomendado — Clareza e Crescimento Financeiro</p>
+        </div>
+        <div class="color-palette">
+          <div class="color-swatch" style="background: #10b981" data-name="Primary"></div>
+          <div class="color-swatch" style="background: #059669" data-name="Primary Dark"></div>
+          <div class="color-swatch" style="background: #ef4444" data-name="Danger"></div>
+          <div class="color-swatch" style="background: #f59e0b" data-name="Warning"></div>
+          <div class="color-swatch" style="background: #3b82f6" data-name="Info"></div>
+          <div class="color-swatch" style="background: #0a0a0a" data-name="Background"></div>
+          <div class="color-swatch" style="background: #141414" data-name="Card"></div>
+          <div class="color-swatch" style="background: #262626" data-name="Border"></div>
+          <div class="color-swatch" style="background: #fafafa" data-name="Text"></div>
+          <div class="color-swatch" style="background: #a1a1aa" data-name="Muted"></div>
+        </div>
+        <div class="ui-preview">
+          <div class="preview-card">
+            <div class="preview-header">
+              <span class="preview-title">Dashboard</span>
+              <span class="preview-badge badge-success">+12%</span>
+            </div>
+            <div class="preview-stats">
+              <div class="stat-item">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value income">R$ 5.000</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value expense">R$ 3.240</div>
+              </div>
+            </div>
+            <div class="preview-progress">
+              <div class="progress-label">
+                <span style="color: var(--text-muted)">🍔 Alimentação</span>
+                <span style="color: var(--warning)">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill warning" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="preview-buttons">
+              <button class="btn btn-primary">+ Transação</button>
+              <button class="btn btn-outline">Filtrar</button>
+            </div>
+          </div>
+        </div>
+        <button class="select-btn" onclick="selectTheme(this)">✓ Tema Selecionado</button>
+      </div>
+
+      <!-- Theme 2: Ocean Blue -->
+      <div class="theme-card" data-theme="ocean" style="
+        --bg: #0c1222;
+        --card: #1e293b;
+        --border: #334155;
+        --muted: #1e293b;
+        --text: #f8fafc;
+        --text-muted: #94a3b8;
+        --primary: #0ea5e9;
+        --success: #22c55e;
+        --success-bg: rgba(34, 197, 94, 0.15);
+        --danger: #f43f5e;
+        --danger-bg: rgba(244, 63, 94, 0.15);
+        --warning: #eab308;
+        --ring: rgba(14, 165, 233, 0.3);
+      ">
+        <div class="theme-header">
+          <h3>🌊 Ocean Blue</h3>
+          <p>Confiança e Tranquilidade</p>
+        </div>
+        <div class="color-palette">
+          <div class="color-swatch" style="background: #0ea5e9" data-name="Primary"></div>
+          <div class="color-swatch" style="background: #0284c7" data-name="Primary Dark"></div>
+          <div class="color-swatch" style="background: #f43f5e" data-name="Danger"></div>
+          <div class="color-swatch" style="background: #eab308" data-name="Warning"></div>
+          <div class="color-swatch" style="background: #22c55e" data-name="Success"></div>
+          <div class="color-swatch" style="background: #0c1222" data-name="Background"></div>
+          <div class="color-swatch" style="background: #1e293b" data-name="Card"></div>
+          <div class="color-swatch" style="background: #334155" data-name="Border"></div>
+          <div class="color-swatch" style="background: #f8fafc" data-name="Text"></div>
+          <div class="color-swatch" style="background: #94a3b8" data-name="Muted"></div>
+        </div>
+        <div class="ui-preview">
+          <div class="preview-card">
+            <div class="preview-header">
+              <span class="preview-title">Dashboard</span>
+              <span class="preview-badge badge-success">+12%</span>
+            </div>
+            <div class="preview-stats">
+              <div class="stat-item">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value income">R$ 5.000</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value expense">R$ 3.240</div>
+              </div>
+            </div>
+            <div class="preview-progress">
+              <div class="progress-label">
+                <span style="color: var(--text-muted)">🍔 Alimentação</span>
+                <span style="color: var(--warning)">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill warning" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="preview-buttons">
+              <button class="btn btn-primary">+ Transação</button>
+              <button class="btn btn-outline">Filtrar</button>
+            </div>
+          </div>
+        </div>
+        <button class="select-btn" onclick="selectTheme(this)">Selecionar Tema</button>
+      </div>
+
+      <!-- Theme 3: Purple Reign -->
+      <div class="theme-card" data-theme="purple" style="
+        --bg: #13111c;
+        --card: #1c1a29;
+        --border: #2d2a3e;
+        --muted: #1c1a29;
+        --text: #faf5ff;
+        --text-muted: #a78bfa;
+        --primary: #8b5cf6;
+        --success: #34d399;
+        --success-bg: rgba(52, 211, 153, 0.15);
+        --danger: #fb7185;
+        --danger-bg: rgba(251, 113, 133, 0.15);
+        --warning: #fbbf24;
+        --ring: rgba(139, 92, 246, 0.3);
+      ">
+        <div class="theme-header">
+          <h3>👑 Purple Reign</h3>
+          <p>Elegância e Sofisticação</p>
+        </div>
+        <div class="color-palette">
+          <div class="color-swatch" style="background: #8b5cf6" data-name="Primary"></div>
+          <div class="color-swatch" style="background: #7c3aed" data-name="Primary Dark"></div>
+          <div class="color-swatch" style="background: #fb7185" data-name="Danger"></div>
+          <div class="color-swatch" style="background: #fbbf24" data-name="Warning"></div>
+          <div class="color-swatch" style="background: #34d399" data-name="Success"></div>
+          <div class="color-swatch" style="background: #13111c" data-name="Background"></div>
+          <div class="color-swatch" style="background: #1c1a29" data-name="Card"></div>
+          <div class="color-swatch" style="background: #2d2a3e" data-name="Border"></div>
+          <div class="color-swatch" style="background: #faf5ff" data-name="Text"></div>
+          <div class="color-swatch" style="background: #a78bfa" data-name="Muted"></div>
+        </div>
+        <div class="ui-preview">
+          <div class="preview-card">
+            <div class="preview-header">
+              <span class="preview-title">Dashboard</span>
+              <span class="preview-badge badge-success">+12%</span>
+            </div>
+            <div class="preview-stats">
+              <div class="stat-item">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value income">R$ 5.000</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value expense">R$ 3.240</div>
+              </div>
+            </div>
+            <div class="preview-progress">
+              <div class="progress-label">
+                <span style="color: var(--text-muted)">🍔 Alimentação</span>
+                <span style="color: var(--warning)">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill warning" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="preview-buttons">
+              <button class="btn btn-primary">+ Transação</button>
+              <button class="btn btn-outline">Filtrar</button>
+            </div>
+          </div>
+        </div>
+        <button class="select-btn" onclick="selectTheme(this)">Selecionar Tema</button>
+      </div>
+
+      <!-- Theme 4: Sunset Orange -->
+      <div class="theme-card" data-theme="sunset" style="
+        --bg: #18120b;
+        --card: #292017;
+        --border: #3d2f1f;
+        --muted: #292017;
+        --text: #fef3e2;
+        --text-muted: #d4a574;
+        --primary: #f97316;
+        --success: #84cc16;
+        --success-bg: rgba(132, 204, 22, 0.15);
+        --danger: #dc2626;
+        --danger-bg: rgba(220, 38, 38, 0.15);
+        --warning: #facc15;
+        --ring: rgba(249, 115, 22, 0.3);
+      ">
+        <div class="theme-header">
+          <h3>🌅 Sunset Warm</h3>
+          <p>Energia e Motivação</p>
+        </div>
+        <div class="color-palette">
+          <div class="color-swatch" style="background: #f97316" data-name="Primary"></div>
+          <div class="color-swatch" style="background: #ea580c" data-name="Primary Dark"></div>
+          <div class="color-swatch" style="background: #dc2626" data-name="Danger"></div>
+          <div class="color-swatch" style="background: #facc15" data-name="Warning"></div>
+          <div class="color-swatch" style="background: #84cc16" data-name="Success"></div>
+          <div class="color-swatch" style="background: #18120b" data-name="Background"></div>
+          <div class="color-swatch" style="background: #292017" data-name="Card"></div>
+          <div class="color-swatch" style="background: #3d2f1f" data-name="Border"></div>
+          <div class="color-swatch" style="background: #fef3e2" data-name="Text"></div>
+          <div class="color-swatch" style="background: #d4a574" data-name="Muted"></div>
+        </div>
+        <div class="ui-preview">
+          <div class="preview-card">
+            <div class="preview-header">
+              <span class="preview-title">Dashboard</span>
+              <span class="preview-badge badge-success">+12%</span>
+            </div>
+            <div class="preview-stats">
+              <div class="stat-item">
+                <div class="stat-label">Receitas</div>
+                <div class="stat-value income">R$ 5.000</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Despesas</div>
+                <div class="stat-value expense">R$ 3.240</div>
+              </div>
+            </div>
+            <div class="preview-progress">
+              <div class="progress-label">
+                <span style="color: var(--text-muted)">🍔 Alimentação</span>
+                <span style="color: var(--warning)">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill warning" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="preview-buttons">
+              <button class="btn btn-primary">+ Transação</button>
+              <button class="btn btn-outline">Filtrar</button>
+            </div>
+          </div>
+        </div>
+        <button class="select-btn" onclick="selectTheme(this)">Selecionar Tema</button>
+      </div>
+    </div>
+
+    <div class="comparison-mode">
+      <h3>📊 Comparação Side-by-Side</h3>
+      <p style="color: #888; margin-bottom: 1rem;">Selecione um tema acima para ver a comparação com o tema recomendado (Emerald Dark)</p>
+      <div class="comparison-grid" id="comparisonGrid">
+        <div style="text-align: center; padding: 2rem; color: #666;">
+          Clique em "Selecionar Tema" para comparar
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function selectTheme(btn) {
+      // Remove selected from all
+      document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('selected');
+        card.querySelector('.select-btn').textContent = 'Selecionar Tema';
+      });
+      
+      // Add selected to clicked
+      const card = btn.closest('.theme-card');
+      card.classList.add('selected');
+      btn.textContent = '✓ Tema Selecionado';
+      
+      // Update comparison
+      updateComparison(card.dataset.theme);
+    }
+
+    function filterTheme(theme) {
+      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.querySelectorAll('.theme-card').forEach(card => {
+        if (theme === 'all' || card.dataset.theme === theme) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function showAll() {
+      document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector('.theme-btn').classList.add('active');
+      document.querySelectorAll('.theme-card').forEach(card => {
+        card.style.display = 'block';
+      });
+    }
+
+    function updateComparison(theme) {
+      const grid = document.getElementById('comparisonGrid');
+      
+      if (theme === 'emerald') {
+        grid.innerHTML = `
+          <div style="text-align: center; padding: 2rem; color: #10b981;">
+            ✓ Emerald Dark é o tema recomendado e já está selecionado!
+          </div>
+        `;
+        return;
+      }
+      
+      const themes = {
+        ocean: { name: 'Ocean Blue', primary: '#0ea5e9', bg: '#0c1222' },
+        purple: { name: 'Purple Reign', primary: '#8b5cf6', bg: '#13111c' },
+        sunset: { name: 'Sunset Warm', primary: '#f97316', bg: '#18120b' }
+      };
+      
+      const selected = themes[theme];
+      
+      grid.innerHTML = `
+        <div style="background: #0a0a0a; padding: 1rem; border-radius: 8px; border: 2px solid #10b981;">
+          <h4 style="color: #10b981; margin-bottom: 0.5rem;">🌿 Emerald Dark (Recomendado)</h4>
+          <p style="color: #888; font-size: 0.875rem;">Verde simboliza crescimento e prosperidade financeira</p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <div style="width: 40px; height: 40px; background: #10b981; border-radius: 8px;"></div>
+            <div style="width: 40px; height: 40px; background: #ef4444; border-radius: 8px;"></div>
+            <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 8px;"></div>
+          </div>
+        </div>
+        <div style="background: ${selected.bg}; padding: 1rem; border-radius: 8px; border: 2px solid ${selected.primary};">
+          <h4 style="color: ${selected.primary}; margin-bottom: 0.5rem;">${selected.name}</h4>
+          <p style="color: #888; font-size: 0.875rem;">Sua escolha alternativa</p>
+          <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <div style="width: 40px; height: 40px; background: ${selected.primary}; border-radius: 8px;"></div>
+            <div style="width: 40px; height: 40px; background: #ef4444; border-radius: 8px;"></div>
+            <div style="width: 40px; height: 40px; background: #f59e0b; border-radius: 8px;"></div>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
+
+

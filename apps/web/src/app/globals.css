@@ -1,0 +1,201 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 160 84% 39%;
+    --radius: 0.625rem;
+    
+    /* Custom finance colors */
+    --income: 142 76% 36%;
+    --expense: 0 84% 60%;
+    --transfer: 217 91% 60%;
+  }
+
+  .dark {
+    /* Novo tema dark - mais sofisticado */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 95%;
+    
+    /* Cards elevados - mais claros que o background */
+    --card: 240 6% 10%;
+    --card-foreground: 0 0% 95%;
+    
+    --popover: 240 6% 10%;
+    --popover-foreground: 0 0% 95%;
+    
+    /* Primary mais vibrante no dark */
+    --primary: 160 84% 45%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary/Muted com mais contraste */
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 95%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Bordas mais visíveis */
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 160 84% 45%;
+    
+    /* Finance colors mais vibrantes */
+    --income: 142 70% 45%;
+    --expense: 0 72% 51%;
+    --transfer: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Scrollbar customizada para dark mode */
+  .dark ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .dark ::-webkit-scrollbar-track {
+    background: hsl(240 6% 10%);
+  }
+  
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(240 4% 25%);
+    border-radius: 4px;
+  }
+  
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(240 4% 35%);
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-stagger {
+    animation-fill-mode: both;
+  }
+  
+  .animate-stagger:nth-child(1) { animation-delay: 0ms; }
+  .animate-stagger:nth-child(2) { animation-delay: 50ms; }
+  .animate-stagger:nth-child(3) { animation-delay: 100ms; }
+  .animate-stagger:nth-child(4) { animation-delay: 150ms; }
+  .animate-stagger:nth-child(5) { animation-delay: 200ms; }
+  
+  /* Subtle pulse animation for notifications */
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.85;
+    }
+  }
+  
+  /* Celebration shake animation */
+  .animate-celebrate {
+    animation: celebrate 0.6s ease-in-out;
+  }
+  
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(-5deg); }
+    50% { transform: scale(1.15) rotate(5deg); }
+    75% { transform: scale(1.1) rotate(-3deg); }
+  }
+  
+  /* Glassmorphism effect for dark mode */
+  .dark .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Gradient backgrounds */
+  .dark .gradient-bg {
+    background: linear-gradient(
+      135deg,
+      hsl(240 10% 3.9%) 0%,
+      hsl(240 8% 6%) 50%,
+      hsl(240 10% 3.9%) 100%
+    );
+  }
+  
+  /* Hover glow effect */
+  .dark .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
+  }
+  
+  /* Card elevation in dark mode */
+  .dark .elevated {
+    box-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.3),
+      0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Finance specific colors */
+@layer components {
+  .text-income {
+    @apply text-emerald-600 dark:text-emerald-400;
+  }
+  
+  .text-expense {
+    @apply text-red-600 dark:text-red-400;
+  }
+  
+  .text-transfer {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+  
+  .bg-income {
+    @apply bg-emerald-100 dark:bg-emerald-500/20;
+  }
+  
+  .bg-expense {
+    @apply bg-red-100 dark:bg-red-500/20;
+  }
+  
+  .bg-transfer {
+    @apply bg-blue-100 dark:bg-blue-500/20;
+  }
+}
