@@ -74,8 +74,8 @@ export function EditCategoryDialog({ category, open, onOpenChange }: EditCategor
     try {
       const response = await updateCategory(category.id, {
         name: name.trim(),
-        icon: selectedIcon,
-        color: selectedColor,
+        icon: selectedIcon ?? undefined,
+        color: selectedColor ?? undefined,
       })
 
       if (response.error) {
