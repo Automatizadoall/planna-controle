@@ -128,7 +128,6 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
                   paddingAngle={2}
                   dataKey="value"
                   stroke="none"
-                  activeIndex={activeIndex}
                   activeShape={renderActiveShape}
                   onMouseEnter={(_, index) => setActiveIndex(index)}
                   onMouseLeave={() => setActiveIndex(undefined)}
@@ -155,11 +154,12 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
                     className="p-2 rounded-full mb-1 transition-all duration-200"
                     style={{ backgroundColor: `${activeData.color}15` }}
                   >
-                    <CategoryIcon 
-                      icon={activeData.icon} 
-                      className="h-5 w-5" 
-                      style={{ color: activeData.color }}
-                    />
+                    <div style={{ color: activeData.color }}>
+                      <CategoryIcon 
+                        icon={activeData.icon} 
+                        className="h-5 w-5" 
+                      />
+                    </div>
                   </div>
                   <p className="text-lg font-bold text-foreground">{formatCurrency(activeData.value)}</p>
                   <p className="text-xs text-muted-foreground">{Math.round(activeData.percent * 100)}%</p>
@@ -194,11 +194,12 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
                         className="p-1 rounded-md transition-all duration-200"
                         style={{ backgroundColor: `${item.color}20` }}
                       >
-                        <CategoryIcon 
-                          icon={item.icon} 
-                          className="h-3.5 w-3.5" 
-                          style={{ color: item.color }}
-                        />
+                        <div style={{ color: item.color }}>
+                          <CategoryIcon 
+                            icon={item.icon} 
+                            className="h-3.5 w-3.5" 
+                          />
+                        </div>
                       </div>
                       <span className="text-sm font-medium text-foreground">{item.name}</span>
                     </div>
