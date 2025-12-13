@@ -104,8 +104,8 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
   const target = Number(goal.target_amount)
   const remaining = target - current
   const percentage = calculateGoalProgress(current, target)
-  const daysRemaining = calculateDaysRemaining(goal.deadline)
-  const monthlySavings = calculateMonthlySavingsNeeded(remaining, goal.deadline)
+  const daysRemaining = calculateDaysRemaining(goal.target_date)
+  const monthlySavings = calculateMonthlySavingsNeeded(remaining, goal.target_date)
   const progressColor = getGoalProgressColor(percentage)
   const goalColor = goal.color || '#10B981'
 
@@ -130,7 +130,7 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
             </div>
             <div>
               <h3 className="font-semibold text-foreground">{goal.name}</h3>
-              {goal.deadline && (
+              {goal.target_date && (
                 <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
                   {formatRemainingTime(daysRemaining)}
