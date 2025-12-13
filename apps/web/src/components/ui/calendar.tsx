@@ -56,10 +56,26 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        NavigationIcon: ({ direction }) =>
-          direction === 'prev'
-            ? <ChevronLeft className="h-4 w-4" />
-            : <ChevronRight className="h-4 w-4" />,
+        Navigation: (props) => (
+          <div className="flex items-center space-x-1">
+            <button
+              type="button"
+              {...props.previousButtonProps}
+              className="h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+              tabIndex={props.previousButtonProps?.tabIndex}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              {...props.nextButtonProps}
+              className="h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+              tabIndex={props.nextButtonProps?.tabIndex}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        ),
       }}
       {...props}
     />
