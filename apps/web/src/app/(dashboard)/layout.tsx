@@ -133,7 +133,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   const notificationData = {
     goals: goals || [],
-    recurring: recurring || [],
+    recurring: (recurring || []).map(r => ({
+      ...r,
+      category: Array.isArray(r.category) ? (r.category[0] ?? null) : (r.category ?? null),
+    })),
     budgetAlerts: budgetAlerts || [],
     pendingCount,
     pendingTotal,
