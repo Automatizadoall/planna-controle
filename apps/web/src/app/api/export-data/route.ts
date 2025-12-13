@@ -222,13 +222,16 @@ Em caso de dúvidas, entre em contato conosco.
     console.log(`[Export Data] Export completed successfully: ${filename}`)
 
     // Return ZIP file
-    return new NextResponse(zipBuffer, {
-      headers: {
-        'Content-Type': 'application/zip',
-        'Content-Disposition': `attachment; filename="${filename}"`,
-        'X-Export-Summary': JSON.stringify(summary),
-      },
-    })
+    return new NextResponse(
+      new Uint8Array(zipBuffer),
+      {
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="${filename}"`,
+          'X-Export-Summary': JSON.stringify(summary),
+        },
+      }
+    )
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error)
