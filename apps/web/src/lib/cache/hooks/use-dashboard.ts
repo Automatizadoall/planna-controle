@@ -115,7 +115,12 @@ export function useExpensesByCategory(userId: string | undefined) {
 
       // Agrupa por categoria
       const byCategory = transactions.reduce((acc, t) => {
-        const cat = t.category as { id: string; name: string; icon: string; color: string } | null
+        // Supabase retorna category como array ou objeto dependendo da relação
+        const categoryData = t.category
+        const cat = Array.isArray(categoryData) 
+          ? categoryData[0] as { id: string; name: string; icon: string; color: string } | undefined
+          : categoryData as { id: string; name: string; icon: string; color: string } | null
+        
         if (!cat) return acc
         
         if (!acc[cat.id]) {
