@@ -8,12 +8,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Link href="/" className="mb-8 flex items-center gap-3">
         <Image
           src="/logo.svg"
-          alt="Planna"
+          alt="Poupefy"
           width={48}
           height={48}
           className="drop-shadow-lg"
         />
-        <span className="text-2xl font-bold text-foreground">Planna</span>
+        <span className="text-2xl font-bold text-foreground">Poupefy</span>
       </Link>
 
       {/* Content */}
@@ -21,7 +21,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Footer */}
       <p className="mt-8 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Planna. Todos os direitos reservados.
+        © {new Date().getFullYear()} Poupefy. Todos os direitos reservados.
       </p>
     </div>
   )

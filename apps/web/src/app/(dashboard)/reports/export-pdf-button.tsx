@@ -93,7 +93,7 @@ export function ExportPDFButton(props: ExportPDFButtonProps) {
       // Header
       doc.setFontSize(20)
       doc.setTextColor(16, 185, 129)
-      doc.text('Planna - Relatório Financeiro', w / 2, 20, { align: 'center' })
+      doc.text('Poupefy - Relatório Financeiro', w / 2, 20, { align: 'center' })
       
       doc.setFontSize(12)
       doc.setTextColor(100)

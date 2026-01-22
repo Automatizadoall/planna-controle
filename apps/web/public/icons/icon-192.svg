@@ -1,12 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
   <defs>
-    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2D9D78"/>
-      <stop offset="50%" style="stop-color:#10B981"/>
-      <stop offset="100%" style="stop-color:#34D399"/>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#86EFAC"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+    <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22C55E"/>
+      <stop offset="100%" style="stop-color:#15803D"/>
+    </linearGradient>
+    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22C55E"/>
+      <stop offset="100%" style="stop-color:#16A34A"/>
     </linearGradient>
   </defs>
-  <path d="M96 10 L173 52.5 L173 139.5 L96 182 L19 139.5 L19 52.5 Z" fill="url(#hexGradient)"/>
-  <path d="M96 10 L173 52.5 L96 96 L19 52.5 Z" fill="#3DB890" opacity="0.7"/>
-  <path d="M67 58 L67 134 L86 134 L86 106 L106 106 C125 106 134 92 134 81 C134 69 125 58 106 58 Z M86 73 L106 73 C112 73 115 77 115 81 C115 85 112 90 106 90 L86 90 Z" fill="white"/>
+  
+  <!-- Background rounded square -->
+  <rect x="10" y="10" width="172" height="172" rx="38" ry="38" fill="url(#bgGradient)" opacity="0.15"/>
+  <rect x="16" y="16" width="160" height="160" rx="32" ry="32" fill="none" stroke="#86EFAC" stroke-width="4" opacity="0.5"/>
+  
+  <!-- Character face (white circle) -->
+  <circle cx="96" cy="105" r="54" fill="white"/>
+  
+  <!-- Hat brim -->
+  <ellipse cx="96" cy="61" rx="58" ry="12" fill="#15803D"/>
+  
+  <!-- Hat top -->
+  <path d="M58 61 Q58 23 96 23 Q134 23 134 61" fill="url(#hatGradient)"/>
+  
+  <!-- Shamrock on hat -->
+  <g transform="translate(86, 35)">
+    <circle cx="0" cy="-6" r="6" fill="#22C55E"/>
+    <circle cx="6" cy="0" r="6" fill="#22C55E"/>
+    <circle cx="-6" cy="0" r="6" fill="#22C55E"/>
+    <path d="M0 0 L0 10" stroke="#22C55E" stroke-width="3"/>
+  </g>
+  
+  <!-- Eyes (happy curved lines) -->
+  <path d="M73 96 Q80 88 88 96" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  <path d="M104 96 Q111 88 119 96" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Smile -->
+  <path d="M77 115 Q96 138 115 115" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  
+  <!-- Coin -->
+  <circle cx="150" cy="125" r="27" fill="url(#coinGradient)"/>
+  <circle cx="150" cy="125" r="21" fill="none" stroke="white" stroke-width="3" opacity="0.8"/>
+  <text x="150" y="134" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="27" font-weight="bold">$</text>
+  
+  <!-- Hand holding coin -->
+  <ellipse cx="138" cy="150" rx="15" ry="10" fill="#A7F3D0" opacity="0.8"/>
 </svg>

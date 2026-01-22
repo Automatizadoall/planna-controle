@@ -67,14 +67,14 @@ export function Sidebar({ user, profile }: SidebarProps) {
             <Link href="/dashboard" className="flex items-center gap-3">
               <Image
                 src="/logo.svg"
-                alt="Planna"
+                alt="Poupefy"
                 width={40}
                 height={40}
                 className="drop-shadow-md"
               />
               {!isCollapsed && (
                 <span className="text-lg font-bold text-foreground whitespace-nowrap">
-                  Planna
+                  Poupefy
                 </span>
               )}
             </Link>

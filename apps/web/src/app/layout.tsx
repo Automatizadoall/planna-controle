@@ -6,15 +6,15 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'Planna - Controle Financeiro',
+  title: 'Poupefy - Controle Financeiro',
   description:
     'Gerencie suas finanças de forma simples e inteligente. Controle gastos, orçamentos e metas.',
-  keywords: ['planna', 'finanças', 'controle financeiro', 'orçamento', 'economia', 'gastos'],
+  keywords: ['poupefy', 'finanças', 'controle financeiro', 'orçamento', 'economia', 'gastos'],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Planna',
+    title: 'Poupefy',
   },
 }
 

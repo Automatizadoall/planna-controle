@@ -9,7 +9,7 @@ export default function Home() {
         <div className="mb-8 flex justify-center">
           <Image
             src="/logo.svg"
-            alt="Planna"
+            alt="Poupefy"
             width={80}
             height={80}
             className="drop-shadow-lg"
@@ -18,7 +18,7 @@ export default function Home() {
 
         {/* Title */}
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Planna
+          Poupefy
           <span className="block text-emerald-600 dark:text-emerald-400">Controle Financeiro</span>
         </h1>
 

@@ -1,6 +1,6 @@
-# Integração WhatsApp - Planna via n8n
+# Integração WhatsApp - Poupefy via n8n
 
-Este documento explica como configurar a integração do WhatsApp com o Planna usando n8n.
+Este documento explica como configurar a integração do WhatsApp com o Poupefy usando n8n.
 
 ## 📋 Pré-requisitos
 
@@ -19,7 +19,7 @@ Configure as seguintes variáveis em **Settings > Variables**:
 | `SUPABASE_URL` | URL do seu projeto Supabase | `https://xxx.supabase.co` |
 | `SUPABASE_SERVICE_KEY` | Service Role Key (não a anon key!) | `eyJhbGc...` |
 | `WHATSAPP_API_URL` | URL da API do WhatsApp | `http://localhost:8080` |
-| `WHATSAPP_INSTANCE` | Nome da instância | `planna` |
+| `WHATSAPP_INSTANCE` | Nome da instância | `poupefy` |
 | `WHATSAPP_API_KEY` | API Key do provider | `sua-api-key` |
 
 ### 2. Importar o Workflow
@@ -38,7 +38,7 @@ Configure as seguintes variáveis em **Settings > Variables**:
 POST https://seu-n8n.com/webhook/whatsapp-transaction
 
 # Configurar no Evolution API
-curl -X POST "http://localhost:8080/webhook/set/planna" \
+curl -X POST "http://localhost:8080/webhook/set/poupefy" \
   -H "apikey: sua-api-key" \
   -H "Content-Type: application/json" \
   -d '{

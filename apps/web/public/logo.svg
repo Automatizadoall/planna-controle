@@ -1,16 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
-    <linearGradient id="hexGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#2D9D78"/>
-      <stop offset="50%" style="stop-color:#10B981"/>
-      <stop offset="100%" style="stop-color:#34D399"/>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#86EFAC"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
+    </linearGradient>
+    <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22C55E"/>
+      <stop offset="100%" style="stop-color:#15803D"/>
+    </linearGradient>
+    <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22C55E"/>
+      <stop offset="100%" style="stop-color:#16A34A"/>
     </linearGradient>
   </defs>
-  <!-- Hexagon 3D shape -->
-  <path d="M50 5 L90 27.5 L90 72.5 L50 95 L10 72.5 L10 27.5 Z" fill="url(#hexGradient)"/>
-  <!-- Top face (lighter) -->
-  <path d="M50 5 L90 27.5 L50 50 L10 27.5 Z" fill="#3DB890" opacity="0.7"/>
-  <!-- Letter P -->
-  <path d="M35 30 L35 70 L45 70 L45 55 L55 55 C65 55 70 48 70 42 C70 36 65 30 55 30 Z M45 38 L55 38 C58 38 60 40 60 42 C60 44 58 47 55 47 L45 47 Z" fill="white"/>
+  
+  <!-- Background rounded square -->
+  <rect x="5" y="5" width="90" height="90" rx="20" ry="20" fill="url(#bgGradient)" opacity="0.15"/>
+  <rect x="8" y="8" width="84" height="84" rx="17" ry="17" fill="none" stroke="#86EFAC" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Character face (white circle) -->
+  <circle cx="50" cy="55" r="28" fill="white"/>
+  
+  <!-- Hat brim -->
+  <ellipse cx="50" cy="32" rx="30" ry="6" fill="#15803D"/>
+  
+  <!-- Hat top -->
+  <path d="M30 32 Q30 12 50 12 Q70 12 70 32" fill="url(#hatGradient)"/>
+  
+  <!-- Shamrock on hat -->
+  <g transform="translate(45, 18)">
+    <circle cx="0" cy="-3" r="3" fill="#22C55E"/>
+    <circle cx="3" cy="0" r="3" fill="#22C55E"/>
+    <circle cx="-3" cy="0" r="3" fill="#22C55E"/>
+    <path d="M0 0 L0 5" stroke="#22C55E" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Eyes (happy curved lines) -->
+  <path d="M38 50 Q42 46 46 50" fill="none" stroke="#15803D" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M54 50 Q58 46 62 50" fill="none" stroke="#15803D" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Smile -->
+  <path d="M40 60 Q50 72 60 60" fill="none" stroke="#15803D" stroke-width="2.5" stroke-linecap="round"/>
+  
+  <!-- Coin -->
+  <circle cx="78" cy="65" r="14" fill="url(#coinGradient)"/>
+  <circle cx="78" cy="65" r="11" fill="none" stroke="white" stroke-width="1.5" opacity="0.8"/>
+  <text x="78" y="70" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">$</text>
+  
+  <!-- Hand holding coin -->
+  <ellipse cx="72" cy="78" rx="8" ry="5" fill="#A7F3D0" opacity="0.8"/>
 </svg>
-

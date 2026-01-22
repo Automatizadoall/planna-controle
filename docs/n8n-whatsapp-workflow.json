@@ -1,5 +1,5 @@
 {
-  "name": "Planna - WhatsApp Transactions",
+  "name": "Poupefy - WhatsApp Transactions",
   "nodes": [
     {
       "parameters": {
@@ -12,7 +12,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [250, 300],
-      "webhookId": "planna-whatsapp"
+      "webhookId": "poupefy-whatsapp"
     },
     {
       "parameters": {
@@ -169,7 +169,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Monta mensagem de confirmação\nconst tx = $('Processar Mensagem').first().json;\nconst created = $input.first().json;\n\nconst typeLabel = tx.type === 'income' ? '💰 Entrada' : '💸 Saída';\nconst amount = new Intl.NumberFormat('pt-BR', { \n  style: 'currency', \n  currency: 'BRL' \n}).format(tx.amount);\n\nconst message = `✅ *Transação registrada!*\n\n${typeLabel}\n📝 ${tx.description}\n💵 ${amount}\n🏦 ${tx.account_name}\n📅 ${tx.date}\n\n_Registrado via Planna_`;\n\nreturn {\n  phone: $('Extrair Dados').first().json.phone,\n  message: message,\n  transaction_id: created[0]?.id || created.id\n};"
+        "jsCode": "// Monta mensagem de confirmação\nconst tx = $('Processar Mensagem').first().json;\nconst created = $input.first().json;\n\nconst typeLabel = tx.type === 'income' ? '💰 Entrada' : '💸 Saída';\nconst amount = new Intl.NumberFormat('pt-BR', { \n  style: 'currency', \n  currency: 'BRL' \n}).format(tx.amount);\n\nconst message = `✅ *Transação registrada!*\n\n${typeLabel}\n📝 ${tx.description}\n💵 ${amount}\n🏦 ${tx.account_name}\n📅 ${tx.date}\n\n_Registrado via Poupefy_`;\n\nreturn {\n  phone: $('Extrair Dados').first().json.phone,\n  message: message,\n  transaction_id: created[0]?.id || created.id\n};"
       },
       "id": "success-message",
       "name": "Mensagem Sucesso",
@@ -189,7 +189,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Mensagem de erro - usuário não encontrado\nconst phone = $('Extrair Dados').first().json.phone;\n\nconst message = `❌ *Número não cadastrado*\n\nO número ${phone} não está vinculado a nenhuma conta Planna.\n\n📱 *Para vincular:*\n1. Acesse o app Planna\n2. Vá em Configurações\n3. Adicione seu número de telefone\n\n_Após vincular, você poderá registrar transações por aqui!_`;\n\nreturn {\n  phone: phone,\n  message: message\n};"
+        "jsCode": "// Mensagem de erro - usuário não encontrado\nconst phone = $('Extrair Dados').first().json.phone;\n\nconst message = `❌ *Número não cadastrado*\n\nO número ${phone} não está vinculado a nenhuma conta Poupefy.\n\n📱 *Para vincular:*\n1. Acesse o app Poupefy\n2. Vá em Configurações\n3. Adicione seu número de telefone\n\n_Após vincular, você poderá registrar transações por aqui!_`;\n\nreturn {\n  phone: phone,\n  message: message\n};"
       },
       "id": "error-not-found",
       "name": "Erro: Usuário Não Encontrado",
@@ -407,7 +407,7 @@
   "staticData": null,
   "tags": [
     {
-      "name": "Planna",
+      "name": "Poupefy",
       "createdAt": "2024-01-01T00:00:00.000Z",
       "updatedAt": "2024-01-01T00:00:00.000Z"
     },

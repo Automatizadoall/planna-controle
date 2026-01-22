@@ -64,12 +64,12 @@ export function MobileHeader({ user, profile, notificationData }: MobileHeaderPr
         <Link href="/dashboard" className="flex items-center gap-2">
           <Image
             src="/logo.svg"
-            alt="Planna"
+            alt="Poupefy"
             width={32}
             height={32}
             className="drop-shadow-md"
           />
-          <span className="font-bold text-foreground">Planna</span>
+          <span className="font-bold text-foreground">Poupefy</span>
         </Link>
 
         {/* Actions */}

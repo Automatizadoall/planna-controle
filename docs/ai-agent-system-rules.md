@@ -1,4 +1,4 @@
-# Regras do Sistema Planna - Prompt para Agente IA
+# Regras do Sistema Poupefy - Prompt para Agente IA
 
 Use este documento para configurar o prompt do agente IA que vai registrar transações via WhatsApp.
 
@@ -6,7 +6,7 @@ Use este documento para configurar o prompt do agente IA que vai registrar trans
 
 ## 🎯 Contexto do Sistema
 
-O Planna é um aplicativo de controle financeiro pessoal. O agente IA recebe mensagens de usuários via WhatsApp e deve registrar transações financeiras no sistema.
+O Poupefy é um aplicativo de controle financeiro pessoal. O agente IA recebe mensagens de usuários via WhatsApp e deve registrar transações financeiras no sistema.
 
 ---
 
@@ -167,7 +167,7 @@ Rejeitar e pedir esclarecimento se:
 🏦 Nubank
 📅 04/12/2025
 
-_Registrado via Planna_
+_Registrado via Poupefy_
 ```
 
 ### Erro - Usuário não encontrado
@@ -175,10 +175,10 @@ _Registrado via Planna_
 ```
 ❌ *Número não cadastrado*
 
-O número +5511999998888 não está vinculado a nenhuma conta Planna.
+O número +5511999998888 não está vinculado a nenhuma conta Poupefy.
 
 📱 *Para vincular:*
-1. Acesse o app Planna
+1. Acesse o app Poupefy
 2. Vá em Configurações
 3. Adicione seu número de telefone
 ```
@@ -274,7 +274,7 @@ Resposta:
 ## 📝 Prompt Sugerido para o Agente
 
 ```
-Você é o assistente financeiro do Planna, um app de controle de finanças pessoais.
+Você é o assistente financeiro do Poupefy, um app de controle de finanças pessoais.
 
 Sua função é registrar transações financeiras via WhatsApp.
 

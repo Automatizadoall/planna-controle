@@ -73,7 +73,7 @@ interface Notification {
   isGoalCompleted?: boolean
 }
 
-const STORAGE_KEY = 'planna_dismissed_notifications'
+const STORAGE_KEY = 'poupefy_dismissed_notifications'
 
 function getDismissed(): string[] {
   if (typeof window === 'undefined') return []

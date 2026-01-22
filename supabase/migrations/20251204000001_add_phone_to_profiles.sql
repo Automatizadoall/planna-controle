@@ -1,5 +1,5 @@
 -- Migration: Add phone_number to profiles
--- Description: Adds optional phone number field for WhatsApp integration (Planna)
+-- Description: Adds optional phone number field for WhatsApp integration (Poupefy)
 
 -- Add phone_number column (optional, unique)
 ALTER TABLE public.profiles

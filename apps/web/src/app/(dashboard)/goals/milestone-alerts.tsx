@@ -27,7 +27,7 @@ interface Milestone {
   type: '50' | '75' | '100'
 }
 
-const STORAGE_KEY = 'planna_dismissed_milestones'
+const STORAGE_KEY = 'poupefy_dismissed_milestones'
 
 function getDismissedMilestones(): string[] {
   if (typeof window === 'undefined') return []

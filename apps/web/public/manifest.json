@@ -1,6 +1,6 @@
 {
-  "name": "Planna - Controle Financeiro",
-  "short_name": "Planna",
+  "name": "Poupefy - Controle Financeiro",
+  "short_name": "Poupefy",
   "description": "Gerencie suas finanças de forma simples e inteligente",
   "start_url": "/dashboard",
   "display": "standalone",
