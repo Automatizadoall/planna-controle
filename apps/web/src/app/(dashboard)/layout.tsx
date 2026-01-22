@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
+import { PrefetchData } from '@/lib/cache/prefetch-data'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
@@ -151,6 +152,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <DashboardShell user={user} profile={profile} notificationData={notificationData}>
+      {/* Prefetch de dados essenciais em background */}
+      <PrefetchData userId={user.id} />
       {children}
     </DashboardShell>
   )
