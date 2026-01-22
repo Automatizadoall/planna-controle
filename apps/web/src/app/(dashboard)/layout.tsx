@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardShell } from '@/components/layout/dashboard-shell'
 import { PrefetchData } from '@/lib/cache/prefetch-data'
+import { RealtimeSync } from '@/lib/cache/realtime-sync'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient()
@@ -154,6 +155,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <DashboardShell user={user} profile={profile} notificationData={notificationData}>
       {/* Prefetch de dados essenciais em background */}
       <PrefetchData userId={user.id} />
+      {/* Sincronização em tempo real - atualiza cache quando dados mudam no banco */}
+      <RealtimeSync userId={user.id} />
       {children}
     </DashboardShell>
   )
