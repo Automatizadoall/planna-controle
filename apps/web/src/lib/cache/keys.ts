@@ -14,7 +14,7 @@ export const cacheKeys = {
   categories: (userId: string) => ['categories', userId] as const,
   
   // Transações (mudam frequentemente)
-  transactions: (userId: string, filters?: Record<string, unknown>) => 
+  transactions: (userId: string, filters?: object) => 
     ['transactions', userId, filters] as const,
   transactionsMonth: (userId: string, year: number, month: number) => 
     ['transactions', userId, 'month', year, month] as const,
