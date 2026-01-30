@@ -7,11 +7,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Logo */}
       <Link href="/" className="mb-8 flex items-center gap-3">
         <Image
-          src="/logo.png"
+          src="/logo.svg"
           alt="Poupefy"
           width={48}
           height={48}
-          className="drop-shadow-lg rounded-xl"
+          className="drop-shadow-lg"
         />
         <span className="text-2xl font-bold text-foreground">Poupefy</span>
       </Link>

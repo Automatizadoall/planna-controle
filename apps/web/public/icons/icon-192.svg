@@ -1,52 +1,73 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <defs>
+    <!-- Gradientes -->
     <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#86EFAC"/>
-      <stop offset="100%" style="stop-color:#10B981"/>
+      <stop offset="0%" style="stop-color:#E8FDF5"/>
+      <stop offset="100%" style="stop-color:#D1FAE5"/>
     </linearGradient>
     <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#22C55E"/>
-      <stop offset="100%" style="stop-color:#15803D"/>
+      <stop offset="0%" style="stop-color:#34D399"/>
+      <stop offset="100%" style="stop-color:#10B981"/>
     </linearGradient>
     <linearGradient id="coinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#22C55E"/>
-      <stop offset="100%" style="stop-color:#16A34A"/>
+      <stop offset="0%" style="stop-color:#10B981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <linearGradient id="faceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF"/>
+      <stop offset="100%" style="stop-color:#F0FDF9"/>
+    </linearGradient>
+    <linearGradient id="shadowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A7F3D0"/>
+      <stop offset="100%" style="stop-color:#6EE7B7"/>
     </linearGradient>
   </defs>
   
-  <!-- Background rounded square -->
-  <rect x="10" y="10" width="172" height="172" rx="38" ry="38" fill="url(#bgGradient)" opacity="0.15"/>
-  <rect x="16" y="16" width="160" height="160" rx="32" ry="32" fill="none" stroke="#86EFAC" stroke-width="4" opacity="0.5"/>
+  <!-- Fundo quadrado arredondado -->
+  <rect x="8" y="8" width="84" height="84" rx="18" ry="18" fill="url(#bgGradient)"/>
+  <rect x="8" y="8" width="84" height="84" rx="18" ry="18" fill="none" stroke="#A7F3D0" stroke-width="2.5"/>
   
-  <!-- Character face (white circle) -->
-  <circle cx="96" cy="105" r="54" fill="white"/>
+  <!-- Sombra/aura do personagem -->
+  <ellipse cx="48" cy="58" rx="26" ry="24" fill="url(#shadowGradient)" opacity="0.4"/>
   
-  <!-- Hat brim -->
-  <ellipse cx="96" cy="61" rx="58" ry="12" fill="#15803D"/>
+  <!-- Rosto do personagem (forma de ovo/fantasma) -->
+  <ellipse cx="48" cy="54" rx="24" ry="26" fill="url(#faceGradient)"/>
+  <ellipse cx="48" cy="54" rx="24" ry="26" fill="none" stroke="#D1FAE5" stroke-width="1"/>
   
-  <!-- Hat top -->
-  <path d="M58 61 Q58 23 96 23 Q134 23 134 61" fill="url(#hatGradient)"/>
+  <!-- Chapéu - Aba -->
+  <ellipse cx="48" cy="32" rx="28" ry="5" fill="#10B981"/>
   
-  <!-- Shamrock on hat -->
-  <g transform="translate(86, 35)">
-    <circle cx="0" cy="-6" r="6" fill="#22C55E"/>
-    <circle cx="6" cy="0" r="6" fill="#22C55E"/>
-    <circle cx="-6" cy="0" r="6" fill="#22C55E"/>
-    <path d="M0 0 L0 10" stroke="#22C55E" stroke-width="3"/>
+  <!-- Chapéu - Faixa branca -->
+  <rect x="30" y="26" width="36" height="6" fill="white" opacity="0.9"/>
+  
+  <!-- Chapéu - Topo -->
+  <path d="M32 32 Q32 12 48 8 Q64 12 64 32" fill="url(#hatGradient)"/>
+  <path d="M32 32 Q32 12 48 8 Q64 12 64 32" fill="none" stroke="#059669" stroke-width="0.5" opacity="0.3"/>
+  
+  <!-- Trevo no chapéu -->
+  <g transform="translate(48, 18)">
+    <!-- Folhas do trevo -->
+    <ellipse cx="-4" cy="0" rx="3.5" ry="3" fill="#34D399" transform="rotate(-30)"/>
+    <ellipse cx="4" cy="0" rx="3.5" ry="3" fill="#34D399" transform="rotate(30)"/>
+    <ellipse cx="0" cy="-4" rx="3" ry="3.5" fill="#34D399"/>
+    <!-- Caule -->
+    <path d="M0 2 L0 7" stroke="#34D399" stroke-width="2" stroke-linecap="round"/>
   </g>
   
-  <!-- Eyes (happy curved lines) -->
-  <path d="M73 96 Q80 88 88 96" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
-  <path d="M104 96 Q111 88 119 96" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  <!-- Olhos (arcos felizes) -->
+  <path d="M36 50 Q40 44 44 50" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M52 50 Q56 44 60 50" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
   
-  <!-- Smile -->
-  <path d="M77 115 Q96 138 115 115" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  <!-- Boca (sorriso grande) -->
+  <path d="M38 58 Q48 70 58 58" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round"/>
   
-  <!-- Coin -->
-  <circle cx="150" cy="125" r="27" fill="url(#coinGradient)"/>
-  <circle cx="150" cy="125" r="21" fill="none" stroke="white" stroke-width="3" opacity="0.8"/>
-  <text x="150" y="134" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="27" font-weight="bold">$</text>
+  <!-- Mão segurando moeda -->
+  <ellipse cx="74" cy="78" rx="8" ry="5" fill="#A7F3D0"/>
   
-  <!-- Hand holding coin -->
-  <ellipse cx="138" cy="150" rx="15" ry="10" fill="#A7F3D0" opacity="0.8"/>
+  <!-- Moeda -->
+  <circle cx="78" cy="68" r="13" fill="url(#coinGradient)"/>
+  <circle cx="78" cy="68" r="10" fill="none" stroke="white" stroke-width="2" opacity="0.8"/>
+  
+  <!-- Símbolo $ na moeda -->
+  <text x="78" y="73" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">$</text>
 </svg>
