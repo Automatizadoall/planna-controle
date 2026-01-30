@@ -1,8 +1,11 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
 import {
+  AreaChart,
+  Area,
   BarChart,
   Bar,
   XAxis,
@@ -24,6 +27,15 @@ interface TrendChartProps {
 }
 
 export function TrendChart({ data }: TrendChartProps) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   if (data.length === 0) {
     return (
       <Card>
@@ -40,12 +52,11 @@ export function TrendChart({ data }: TrendChartProps) {
     )
   }
 
-  // Agrupar por semana se tiver muitos dados (mais de 14 dias)
-  const shouldGroup = data.length > 14
+  // Agrupar por semana se tiver muitos dados (mais de 14 dias) - apenas mobile
+  const shouldGroup = isMobile && data.length > 14
   
   let chartData
   if (shouldGroup) {
-    // Agrupar por semana
     const weeklyData: { [key: string]: { income: number; expenses: number; count: number } } = {}
     data.forEach((item) => {
       const date = new Date(item.date)
@@ -73,6 +84,15 @@ export function TrendChart({ data }: TrendChartProps) {
     }))
   }
 
+  const tooltipStyle = {
+    backgroundColor: 'var(--background)',
+    border: '1px solid var(--border)',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+    color: 'var(--foreground)',
+    fontSize: '12px',
+  }
+
   return (
     <Card>
       <CardHeader className="px-3 sm:px-6">
@@ -81,60 +101,82 @@ export function TrendChart({ data }: TrendChartProps) {
       <CardContent className="px-2 sm:px-6">
         <div className="h-[250px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }} barGap={2}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
-              <XAxis
-                dataKey="displayDate"
-                tick={{ fontSize: 10 }}
-                tickLine={false}
-                axisLine={false}
-                interval="preserveStartEnd"
-                className="text-muted-foreground fill-muted-foreground"
-              />
-              <YAxis
-                tick={{ fontSize: 10 }}
-                tickLine={false}
-                axisLine={false}
-                width={40}
-                tickFormatter={(value) => 
-                  value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString()
-                }
-                className="text-muted-foreground fill-muted-foreground"
-              />
-              <Tooltip
-                formatter={(value: number, name: string) => [
-                  formatCurrency(value),
-                  name === 'income' ? 'Receitas' : 'Despesas',
-                ]}
-                labelFormatter={(label) => label}
-                contentStyle={{
-                  backgroundColor: 'var(--background)',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                  color: 'var(--foreground)',
-                  fontSize: '12px',
-                }}
-              />
-              <Legend
-                formatter={(value) => value === 'income' ? 'Receitas' : 'Despesas'}
-                iconType="circle"
-                iconSize={8}
-                wrapperStyle={{ fontSize: '12px' }}
-              />
-              <Bar
-                dataKey="expenses"
-                fill="#EF4444"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={24}
-              />
-              <Bar
-                dataKey="income"
-                fill="#10B981"
-                radius={[4, 4, 0, 0]}
-                maxBarSize={24}
-              />
-            </BarChart>
+            {isMobile ? (
+              // Mobile: Barras agrupadas
+              <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }} barGap={2}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
+                <XAxis
+                  dataKey="displayDate"
+                  tick={{ fontSize: 10 }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval="preserveStartEnd"
+                  className="text-muted-foreground fill-muted-foreground"
+                />
+                <YAxis
+                  tick={{ fontSize: 10 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={40}
+                  tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString()}
+                  className="text-muted-foreground fill-muted-foreground"
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) => [formatCurrency(value), name === 'income' ? 'Receitas' : 'Despesas']}
+                  labelFormatter={(label) => label}
+                  contentStyle={tooltipStyle}
+                />
+                <Legend
+                  formatter={(value) => value === 'income' ? 'Receitas' : 'Despesas'}
+                  iconType="circle"
+                  iconSize={8}
+                  wrapperStyle={{ fontSize: '12px' }}
+                />
+                <Bar dataKey="expenses" fill="#EF4444" radius={[4, 4, 0, 0]} maxBarSize={24} />
+                <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} maxBarSize={24} />
+              </BarChart>
+            ) : (
+              // Desktop: Linhas com área
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                <XAxis
+                  dataKey="displayDate"
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  interval="preserveStartEnd"
+                  className="text-muted-foreground fill-muted-foreground"
+                />
+                <YAxis
+                  tick={{ fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString()}
+                  className="text-muted-foreground fill-muted-foreground"
+                />
+                <Tooltip
+                  formatter={(value: number, name: string) => [formatCurrency(value), name === 'income' ? 'Receitas' : 'Despesas']}
+                  labelFormatter={(label) => `Data: ${label}`}
+                  contentStyle={tooltipStyle}
+                />
+                <Legend
+                  formatter={(value) => value === 'income' ? 'Receitas' : 'Despesas'}
+                  iconType="circle"
+                />
+                <Area type="monotone" dataKey="income" stroke="#10B981" strokeWidth={2} fill="url(#incomeGradient)" />
+                <Area type="monotone" dataKey="expenses" stroke="#EF4444" strokeWidth={2} fill="url(#expenseGradient)" />
+              </AreaChart>
+            )}
           </ResponsiveContainer>
         </div>
       </CardContent>
