@@ -1,0 +1,89 @@
+name: Manutenção Mensal
+
+on:
+  # Executa no dia 1 de cada mês às 9h (horário de Brasília = 12h UTC)
+  schedule:
+    - cron: '0 12 1 * *'
+  
+  # Permite executar manualmente
+  workflow_dispatch:
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Verificar vulnerabilidades
+        id: audit
+        continue-on-error: true
+        run: |
+          echo "## Vulnerabilidades" >> $GITHUB_STEP_SUMMARY
+          npm audit --audit-level=moderate 2>&1 | tee audit-result.txt || true
+          if grep -q "found 0 vulnerabilities" audit-result.txt; then
+            echo "✅ Nenhuma vulnerabilidade encontrada" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Vulnerabilidades encontradas - verifique os detalhes" >> $GITHUB_STEP_SUMMARY
+            cat audit-result.txt >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Verificar pacotes desatualizados
+        id: outdated
+        continue-on-error: true
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Pacotes Desatualizados" >> $GITHUB_STEP_SUMMARY
+          npm outdated 2>&1 | tee outdated-result.txt || true
+          if [ -s outdated-result.txt ]; then
+            echo "⚠️ Pacotes precisam de atualização:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            cat outdated-result.txt >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✅ Todos os pacotes estão atualizados" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Build de teste
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Build" >> $GITHUB_STEP_SUMMARY
+          if npm run build; then
+            echo "✅ Build passou com sucesso" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Build falhou" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
+      - name: Gerar relatório
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Resumo" >> $GITHUB_STEP_SUMMARY
+          echo "- 📅 Data: $(date +'%d/%m/%Y %H:%M')" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔧 Node: $(node -v)" >> $GITHUB_STEP_SUMMARY
+          echo "- 📦 NPM: $(npm -v)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Próxima manutenção automática: dia 1 do próximo mês" >> $GITHUB_STEP_SUMMARY
+
+      - name: Criar issue se houver problemas
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔧 Manutenção Mensal - Problemas Encontrados',
+              body: `A manutenção automática encontrou problemas.\n\nVerifique o [workflow run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) para mais detalhes.\n\nData: ${new Date().toLocaleDateString('pt-BR')}`,
+              labels: ['maintenance', 'automated']
+            })

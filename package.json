@@ -18,7 +18,9 @@
     "db:push": "supabase db push",
     "db:types": "supabase gen types typescript --local > packages/database/src/types/database.types.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "clean": "turbo clean && rm -rf node_modules"
+    "clean": "turbo clean && rm -rf node_modules",
+    "maintenance": "node scripts/maintenance.js",
+    "audit": "npm audit && npm outdated"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
