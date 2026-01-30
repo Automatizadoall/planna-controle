@@ -105,7 +105,7 @@ export const IncomeVsExpenses = memo(function IncomeVsExpenses({ data }: IncomeV
         <CardTitle className="text-base sm:text-lg">Receitas vs Despesas</CardTitle>
       </CardHeader>
       <CardContent className="pt-0 px-2 sm:px-6">
-        <div className="h-[220px] sm:h-[280px]">
+        <div className="h-[220px] sm:h-[280px] lg:h-[350px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart 
               data={data} 

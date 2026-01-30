@@ -109,8 +109,8 @@ export const ExpensesByCategory = memo(function ExpensesByCategory({ data, total
       </CardHeader>
       <CardContent className="pt-0 px-2.5 sm:px-6">
         <div className="flex flex-col items-center gap-2 sm:gap-4">
-          {/* Chart */}
-          <div className="relative h-[140px] sm:h-[200px] w-full max-w-[200px] sm:max-w-none flex-shrink-0">
+          {/* Chart - maior no desktop */}
+          <div className="relative h-[140px] sm:h-[200px] lg:h-[280px] w-full max-w-[200px] sm:max-w-[240px] lg:max-w-[320px] flex-shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <defs>
@@ -129,8 +129,8 @@ export const ExpensesByCategory = memo(function ExpensesByCategory({ data, total
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={35}
-                  outerRadius={55}
+                  innerRadius="45%"
+                  outerRadius="75%"
                   paddingAngle={2}
                   dataKey="value"
                   stroke="none"
@@ -159,23 +159,23 @@ export const ExpensesByCategory = memo(function ExpensesByCategory({ data, total
               {activeData ? (
                 <>
                   <div 
-                    className="p-1.5 sm:p-2 rounded-full mb-0.5 sm:mb-1 transition-all duration-200"
+                    className="p-1.5 sm:p-2 lg:p-3 rounded-full mb-0.5 sm:mb-1 transition-all duration-200"
                     style={{ backgroundColor: `${activeData.color}15` }}
                   >
                     <div style={{ color: activeData.color }}>
                       <CategoryIcon 
                         icon={activeData.icon} 
-                        className="h-4 w-4 sm:h-5 sm:w-5" 
+                        className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" 
                       />
                     </div>
                   </div>
-                  <p className="text-sm sm:text-lg font-bold text-foreground">{formatCurrency(activeData.value)}</p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground">{Math.round(activeData.percent * 100)}%</p>
+                  <p className="text-sm sm:text-lg lg:text-xl font-bold text-foreground">{formatCurrency(activeData.value)}</p>
+                  <p className="text-[10px] sm:text-xs lg:text-sm text-muted-foreground">{Math.round(activeData.percent * 100)}%</p>
                 </>
               ) : (
                 <>
-                  <p className="text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-medium">Total</p>
-                  <p className="text-base sm:text-xl font-bold text-foreground">{formatCurrency(total)}</p>
+                  <p className="text-[9px] sm:text-[10px] lg:text-xs uppercase tracking-wider text-muted-foreground font-medium">Total</p>
+                  <p className="text-base sm:text-xl lg:text-2xl font-bold text-foreground">{formatCurrency(total)}</p>
                 </>
               )}
             </div>
