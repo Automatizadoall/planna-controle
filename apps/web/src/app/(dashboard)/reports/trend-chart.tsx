@@ -3,8 +3,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
 import {
-  AreaChart,
-  Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -27,67 +27,75 @@ export function TrendChart({ data }: TrendChartProps) {
   if (data.length === 0) {
     return (
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Evolução no Período</CardTitle>
+        <CardHeader className="px-3 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">Evolução no Período</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="text-4xl mb-4">📈</div>
-            <p className="text-muted-foreground">Sem dados para exibir</p>
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex flex-col items-center justify-center py-8 sm:py-12 text-center">
+            <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📈</div>
+            <p className="text-sm text-muted-foreground">Sem dados para exibir</p>
           </div>
         </CardContent>
       </Card>
     )
   }
 
-  // Format date for display
-  const formattedData = data.map((item) => ({
-    ...item,
-    displayDate: new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
-  }))
-
-  // Calculate cumulative balance
-  let cumulativeBalance = 0
-  const dataWithBalance = formattedData.map((item) => {
-    cumulativeBalance += item.income - item.expenses
-    return {
+  // Agrupar por semana se tiver muitos dados (mais de 14 dias)
+  const shouldGroup = data.length > 14
+  
+  let chartData
+  if (shouldGroup) {
+    // Agrupar por semana
+    const weeklyData: { [key: string]: { income: number; expenses: number; count: number } } = {}
+    data.forEach((item) => {
+      const date = new Date(item.date)
+      const weekStart = new Date(date)
+      weekStart.setDate(date.getDate() - date.getDay())
+      const weekKey = weekStart.toISOString().split('T')[0]
+      
+      if (!weeklyData[weekKey]) {
+        weeklyData[weekKey] = { income: 0, expenses: 0, count: 0 }
+      }
+      weeklyData[weekKey].income += item.income
+      weeklyData[weekKey].expenses += item.expenses
+      weeklyData[weekKey].count++
+    })
+    
+    chartData = Object.entries(weeklyData).map(([date, values]) => ({
+      displayDate: `Sem ${new Date(date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}`,
+      income: values.income,
+      expenses: values.expenses,
+    }))
+  } else {
+    chartData = data.map((item) => ({
       ...item,
-      balance: cumulativeBalance,
-    }
-  })
+      displayDate: new Date(item.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }),
+    }))
+  }
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">Evolução no Período</CardTitle>
+      <CardHeader className="px-3 sm:px-6">
+        <CardTitle className="text-base sm:text-lg">Evolução no Período</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
+      <CardContent className="px-2 sm:px-6">
+        <div className="h-[250px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={dataWithBalance} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="incomeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="expenseGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#EF4444" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }} barGap={2}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" vertical={false} />
               <XAxis
                 dataKey="displayDate"
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 10 }}
                 tickLine={false}
                 axisLine={false}
                 interval="preserveStartEnd"
                 className="text-muted-foreground fill-muted-foreground"
               />
               <YAxis
-                tick={{ fontSize: 11 }}
+                tick={{ fontSize: 10 }}
                 tickLine={false}
                 axisLine={false}
+                width={40}
                 tickFormatter={(value) => 
                   value >= 1000 ? `${(value / 1000).toFixed(0)}k` : value.toString()
                 }
@@ -96,38 +104,37 @@ export function TrendChart({ data }: TrendChartProps) {
               <Tooltip
                 formatter={(value: number, name: string) => [
                   formatCurrency(value),
-                  name === 'income' ? 'Receitas' : name === 'expenses' ? 'Despesas' : 'Saldo Acumulado',
+                  name === 'income' ? 'Receitas' : 'Despesas',
                 ]}
-                labelFormatter={(label) => `Data: ${label}`}
+                labelFormatter={(label) => label}
                 contentStyle={{
                   backgroundColor: 'var(--background)',
                   border: '1px solid var(--border)',
                   borderRadius: '8px',
                   boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                   color: 'var(--foreground)',
+                  fontSize: '12px',
                 }}
               />
               <Legend
-                formatter={(value) => 
-                  value === 'income' ? 'Receitas' : value === 'expenses' ? 'Despesas' : 'Saldo'
-                }
+                formatter={(value) => value === 'income' ? 'Receitas' : 'Despesas'}
                 iconType="circle"
+                iconSize={8}
+                wrapperStyle={{ fontSize: '12px' }}
               />
-              <Area
-                type="monotone"
-                dataKey="income"
-                stroke="#10B981"
-                strokeWidth={2}
-                fill="url(#incomeGradient)"
-              />
-              <Area
-                type="monotone"
+              <Bar
                 dataKey="expenses"
-                stroke="#EF4444"
-                strokeWidth={2}
-                fill="url(#expenseGradient)"
+                fill="#EF4444"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
               />
-            </AreaChart>
+              <Bar
+                dataKey="income"
+                fill="#10B981"
+                radius={[4, 4, 0, 0]}
+                maxBarSize={24}
+              />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </CardContent>

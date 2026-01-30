@@ -8,7 +8,7 @@ import {
   Receipt,
   PiggyBank,
   Target,
-  MoreHorizontal,
+  Settings,
 } from 'lucide-react'
 
 const mobileNavItems = [
@@ -16,7 +16,7 @@ const mobileNavItems = [
   { name: 'Transações', href: '/transactions', icon: Receipt },
   { name: 'Orçamentos', href: '/budgets', icon: PiggyBank },
   { name: 'Metas', href: '/goals', icon: Target },
-  { name: 'Mais', href: '/more', icon: MoreHorizontal },
+  { name: 'Config', href: '/settings', icon: Settings },
 ]
 
 export function MobileNav() {
