@@ -45,25 +45,25 @@ function DashboardContent({ user, profile, notificationData, children }: Dashboa
   const { isCollapsed } = useSidebar()
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
       {/* Sidebar - Desktop Only */}
       <Sidebar user={user} profile={profile} />
 
-      {/* Mobile Header */}
-      <MobileHeader user={user} profile={profile} notificationData={notificationData} />
-
-      {/* Main Content */}
+      {/* Main Content Wrapper */}
       <div
         className={cn(
-          'flex flex-1 flex-col transition-all duration-300 ease-in-out',
-          isCollapsed ? 'lg:pl-[72px]' : 'lg:pl-64'
+          'flex flex-col min-h-screen transition-all duration-300 ease-in-out',
+          isCollapsed ? 'lg:ml-[72px]' : 'lg:ml-64'
         )}
       >
-        {/* Desktop Header */}
+        {/* Mobile Header - Only visible on mobile */}
+        <MobileHeader user={user} profile={profile} notificationData={notificationData} />
+        
+        {/* Desktop Header - Only visible on desktop */}
         <Header user={user} profile={profile} notificationData={notificationData} />
 
         {/* Page Content */}
-        <main className="flex-1 p-4 pb-20 lg:p-6 lg:pb-6">{children}</main>
+        <main className="flex-1 p-3 pb-20 sm:p-4 lg:p-6 lg:pb-6">{children}</main>
       </div>
 
       {/* Mobile Bottom Navigation */}
