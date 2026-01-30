@@ -49,8 +49,6 @@ export default function RegisterPage() {
     try {
       const supabase = createClient()
       
-      console.log('Iniciando cadastro com:', { email: data.email, fullName: data.fullName })
-      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
       
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -62,8 +60,6 @@ export default function RegisterPage() {
           emailRedirectTo: `${window.location.origin}/login`,
         },
       })
-
-      console.log('Resposta do Supabase:', { authData, error })
 
       if (error) {
         console.error('Supabase auth error:', error)

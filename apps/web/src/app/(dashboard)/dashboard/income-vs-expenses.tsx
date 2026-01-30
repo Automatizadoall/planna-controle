@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/utils'
 import {
@@ -19,7 +20,7 @@ interface MonthlyData {
   expenses: number
 }
 
-interface IncomeVsExpensesProps {
+export interface IncomeVsExpensesProps {
   data: MonthlyData[]
 }
 
@@ -72,8 +73,14 @@ function CustomLegend() {
   )
 }
 
-export function IncomeVsExpenses({ data }: IncomeVsExpensesProps) {
-  const hasData = data.some((d) => d.income > 0 || d.expenses > 0)
+export const IncomeVsExpenses = memo(function IncomeVsExpenses({ data }: IncomeVsExpensesProps) {
+  const hasData = useMemo(() => data.some((d) => d.income > 0 || d.expenses > 0), [data])
+  
+  // Memoizar valor máximo para evitar recálculo
+  const maxValue = useMemo(
+    () => Math.max(...data.flatMap(d => [d.income, d.expenses])),
+    [data]
+  )
 
   if (!hasData) {
     return (
@@ -91,9 +98,6 @@ export function IncomeVsExpenses({ data }: IncomeVsExpensesProps) {
       </Card>
     )
   }
-
-  // Find max value for better Y axis
-  const maxValue = Math.max(...data.flatMap(d => [d.income, d.expenses]))
 
   return (
     <Card className="overflow-hidden">
@@ -189,4 +193,6 @@ export function IncomeVsExpenses({ data }: IncomeVsExpensesProps) {
       </CardContent>
     </Card>
   )
-}
+})
+
+IncomeVsExpenses.displayName = 'IncomeVsExpenses'

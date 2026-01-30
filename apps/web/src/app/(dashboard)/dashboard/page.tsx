@@ -1,7 +1,7 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardSummary } from './dashboard-summary'
-import { ExpensesByCategory } from './expenses-by-category'
-import { IncomeVsExpenses } from './income-vs-expenses'
+import { LazyExpensesByCategory, LazyIncomeVsExpenses } from './lazy-charts'
 import { RecentTransactions } from './recent-transactions'
 import { BudgetAlerts } from './budget-alerts'
 import { GoalsProgress } from './goals-progress'
@@ -160,10 +160,10 @@ export default async function DashboardPage() {
         accountsCount={accounts?.length || 0}
       />
 
-      {/* Charts Row */}
+      {/* Charts Row - Lazy loaded para melhor performance */}
       <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
-        <ExpensesByCategory data={expensesByCategoryArray} total={monthlyExpenses} />
-        <IncomeVsExpenses data={monthlyData} />
+        <LazyExpensesByCategory data={expensesByCategoryArray} total={monthlyExpenses} />
+        <LazyIncomeVsExpenses data={monthlyData} />
       </div>
 
       {/* Alerts and Progress Row */}

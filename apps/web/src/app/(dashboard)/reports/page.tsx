@@ -1,10 +1,69 @@
+import nextDynamic from 'next/dynamic'
 import { createClient } from '@/lib/supabase/server'
 import { ReportFilters } from './report-filters'
 import { ReportSummary } from './report-summary'
-import { CategoryBreakdown } from './category-breakdown'
-import { TrendChart } from './trend-chart'
-import { MonthlyComparison } from './monthly-comparison'
-import { ExportPDFButton } from './export-pdf-button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+
+// Lazy load gráficos pesados (Recharts) - reduz bundle inicial
+const CategoryBreakdown = nextDynamic(
+  () => import('./category-breakdown').then((m) => ({ default: m.CategoryBreakdown })),
+  {
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-40" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[200px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+    ssr: true,
+  }
+)
+
+const TrendChart = nextDynamic(
+  () => import('./trend-chart').then((m) => ({ default: m.TrendChart })),
+  {
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-40" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[300px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+    ssr: true,
+  }
+)
+
+const MonthlyComparison = nextDynamic(
+  () => import('./monthly-comparison').then((m) => ({ default: m.MonthlyComparison })),
+  {
+    loading: () => (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-48" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-[350px] w-full" />
+        </CardContent>
+      </Card>
+    ),
+    ssr: false, // Client only - fetches its own data
+  }
+)
+
+const ExportPDFButton = nextDynamic(
+  () => import('./export-pdf-button').then((m) => ({ default: m.ExportPDFButton })),
+  {
+    loading: () => <Skeleton className="h-10 w-32" />,
+    ssr: false, // Client only - uses browser APIs
+  }
+)
 
 interface SearchParams {
   period?: string
@@ -73,10 +132,6 @@ export default async function ReportsPage({
       startDate = formatDate(currentYear, currentMonth, 1)
   }
   
-  // Debug log
-  console.log('[Reports] Current:', currentYear, currentMonth, currentDay)
-  console.log('[Reports] Period:', period, 'Start:', startDate, 'End:', endDate)
-
   // Fetch transactions for the period - simplified query to avoid join issues
   const { data: rawTransactions, error: txError } = await supabase
     .from('transactions')
@@ -103,8 +158,6 @@ export default async function ReportsPage({
     category: t.category_id ? categoryMap.get(t.category_id) : null
   })) || []
   
-  console.log('[Reports] Found', transactions.length, 'transactions')
-
   // Calculate totals
   const totalIncome = transactions
     ?.filter((t) => t.type === 'income')

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { Bell, X, Target, Calendar, Lightbulb, Clock, AlertTriangle, Trophy, Sparkles, TrendingUp, CreditCard, Zap } from 'lucide-react'
 import {
   Popover,
@@ -9,8 +10,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { formatCurrency } from '@/lib/utils'
-import Confetti from 'react-confetti'
-import { useWindowSize } from 'react-use'
+
+// Lazy load confetti e useWindowSize - só carrega quando meta é concluída
+const Confetti = dynamic(() => import('react-confetti'), { ssr: false })
 
 interface Goal {
   id: string
@@ -114,7 +116,14 @@ export function NotificationsDropdown({
   const [dismissedIds, setDismissedIds] = useState<string[]>([])
   const [showConfetti, setShowConfetti] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
-  const { width, height } = useWindowSize()
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+
+  // Get window size only when confetti is needed
+  useEffect(() => {
+    if (showConfetti) {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    }
+  }, [showConfetti])
 
   // Load dismissed IDs only on client after mount
   useEffect(() => {
@@ -337,11 +346,11 @@ export function NotificationsDropdown({
 
   return (
     <>
-      {/* Confetti for completed goals */}
-      {showConfetti && (
+      {/* Confetti for completed goals - lazy loaded */}
+      {showConfetti && windowSize.width > 0 && (
         <Confetti
-          width={width}
-          height={height}
+          width={windowSize.width}
+          height={windowSize.height}
           recycle={false}
           numberOfPieces={200}
           gravity={0.3}

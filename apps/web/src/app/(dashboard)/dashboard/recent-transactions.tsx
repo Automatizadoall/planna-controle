@@ -1,5 +1,6 @@
 'use client'
 
+import { memo, useMemo } from 'react'
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -26,7 +27,65 @@ interface RecentTransactionsProps {
   transactions: Transaction[]
 }
 
-export function RecentTransactions({ transactions }: RecentTransactionsProps) {
+// Memoized transaction item para evitar re-renders desnecessários
+const TransactionItem = memo(function TransactionItem({ 
+  transaction,
+  getIcon 
+}: { 
+  transaction: Transaction
+  getIcon: (type: string) => React.ReactNode
+}) {
+  return (
+    <div
+      className="flex items-center justify-between rounded-lg border p-2 sm:p-3 hover:bg-accent transition-colors"
+    >
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+        {/* Category Icon */}
+        <div
+          className={cn(
+            'flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg flex-shrink-0',
+            transaction.type === 'income' && 'bg-emerald-100 dark:bg-emerald-900/30',
+            transaction.type === 'expense' && 'bg-red-100 dark:bg-red-900/30',
+            transaction.type === 'transfer' && 'bg-blue-100 dark:bg-blue-900/30'
+          )}
+        >
+          {transaction.category?.icon ? (
+            <CategoryIcon icon={transaction.category.icon} className="text-sm sm:text-lg" />
+          ) : (
+            getIcon(transaction.type)
+          )}
+        </div>
+
+        {/* Details */}
+        <div className="min-w-0 flex-1">
+          <p className="text-sm sm:text-base font-medium text-foreground truncate">
+            {transaction.description || transaction.category?.name || 'Transação'}
+          </p>
+          <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+            {transaction.category?.name || 'Sem categoria'} • {formatDate(transaction.date)}
+          </p>
+        </div>
+      </div>
+
+      {/* Amount */}
+      <p
+        className={cn(
+          'text-sm sm:text-base font-semibold flex-shrink-0 ml-2',
+          transaction.type === 'income' && 'text-emerald-600 dark:text-emerald-400',
+          transaction.type === 'expense' && 'text-red-600 dark:text-red-400',
+          transaction.type === 'transfer' && 'text-blue-600 dark:text-blue-400'
+        )}
+      >
+        {transaction.type === 'expense' ? '-' : transaction.type === 'income' ? '+' : ''}
+        {formatCurrency(Number(transaction.amount))}
+      </p>
+    </div>
+  )
+})
+
+TransactionItem.displayName = 'TransactionItem'
+
+export const RecentTransactions = memo(function RecentTransactions({ transactions }: RecentTransactionsProps) {
   if (transactions.length === 0) {
     return (
       <Card>
@@ -49,7 +108,8 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
     )
   }
 
-  const getIcon = (type: string) => {
+  // Memoizar função getIcon para evitar recriação a cada render
+  const getIcon = useMemo(() => (type: string) => {
     switch (type) {
       case 'income':
         return <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -58,7 +118,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
       case 'transfer':
         return <ArrowRightLeft className="h-4 w-4 text-blue-600 dark:text-blue-400" />
     }
-  }
+  }, [])
 
   return (
     <Card>
@@ -73,55 +133,17 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
       <CardContent className="px-3 sm:px-6">
         <div className="space-y-2 sm:space-y-3">
           {transactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className="flex items-center justify-between rounded-lg border p-2 sm:p-3 hover:bg-accent transition-colors"
-            >
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                {/* Category Icon */}
-                <div
-                  className={cn(
-                    'flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg flex-shrink-0',
-                    transaction.type === 'income' && 'bg-emerald-100 dark:bg-emerald-900/30',
-                    transaction.type === 'expense' && 'bg-red-100 dark:bg-red-900/30',
-                    transaction.type === 'transfer' && 'bg-blue-100 dark:bg-blue-900/30'
-                  )}
-                >
-                  {transaction.category?.icon ? (
-                    <CategoryIcon icon={transaction.category.icon} className="text-sm sm:text-lg" />
-                  ) : (
-                    getIcon(transaction.type)
-                  )}
-                </div>
-
-                {/* Details */}
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm sm:text-base font-medium text-foreground truncate">
-                    {transaction.description || transaction.category?.name || 'Transação'}
-                  </p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    {transaction.category?.name || 'Sem categoria'} • {formatDate(transaction.date)}
-                  </p>
-                </div>
-              </div>
-
-              {/* Amount */}
-              <p
-                className={cn(
-                  'text-sm sm:text-base font-semibold flex-shrink-0 ml-2',
-                  transaction.type === 'income' && 'text-emerald-600 dark:text-emerald-400',
-                  transaction.type === 'expense' && 'text-red-600 dark:text-red-400',
-                  transaction.type === 'transfer' && 'text-blue-600 dark:text-blue-400'
-                )}
-              >
-                {transaction.type === 'expense' ? '-' : transaction.type === 'income' ? '+' : ''}
-                {formatCurrency(Number(transaction.amount))}
-              </p>
-            </div>
+            <TransactionItem 
+              key={transaction.id} 
+              transaction={transaction} 
+              getIcon={getIcon} 
+            />
           ))}
         </div>
       </CardContent>
     </Card>
   )
-}
+})
+
+RecentTransactions.displayName = 'RecentTransactions'
 

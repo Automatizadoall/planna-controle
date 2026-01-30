@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, memo, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency, calculatePercentage } from '@/lib/utils'
 import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from 'recharts'
@@ -14,7 +14,7 @@ interface CategoryData {
   total: number
 }
 
-interface ExpensesByCategoryProps {
+export interface ExpensesByCategoryProps {
   data: CategoryData[]
   total: number
 }
@@ -56,13 +56,24 @@ function renderActiveShape(props: any) {
 }
 
 
-export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
+export const ExpensesByCategory = memo(function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
   const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined)
 
   // Toggle para suporte touch (mobile)
   const handleItemClick = useCallback((idx: number) => {
     setActiveIndex(prev => prev === idx ? undefined : idx)
   }, [])
+
+  // Memoizar dados do gráfico para evitar recálculo
+  const chartData = useMemo(() => data.map((item, idx) => ({
+    name: item.name,
+    value: item.total,
+    color: item.color || VIBRANT_COLORS[idx % VIBRANT_COLORS.length],
+    icon: item.icon,
+    percent: item.total / total,
+  })), [data, total])
+
+  const activeData = activeIndex !== undefined ? chartData[activeIndex] : null
 
   if (data.length === 0) {
     return (
@@ -85,16 +96,6 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
       </Card>
     )
   }
-
-  const chartData = data.map((item, idx) => ({
-    name: item.name,
-    value: item.total,
-    color: item.color || VIBRANT_COLORS[idx % VIBRANT_COLORS.length],
-    icon: item.icon,
-    percent: item.total / total,
-  }))
-
-  const activeData = activeIndex !== undefined ? chartData[activeIndex] : null
 
   return (
     <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
@@ -219,5 +220,7 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
       </CardContent>
     </Card>
   )
-}
+})
+
+ExpensesByCategory.displayName = 'ExpensesByCategory'
 

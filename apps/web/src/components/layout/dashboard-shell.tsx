@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@mentoria/database'
 import { SidebarProvider, useSidebar } from './sidebar-context'
@@ -8,6 +8,7 @@ import { Sidebar } from './sidebar'
 import { Header } from './header'
 import { MobileHeader } from './mobile-header'
 import { MobileNav } from './mobile-nav'
+import { NavigationProgress } from './navigation-progress'
 import { cn } from '@/lib/utils'
 
 export interface UnusualSpending {
@@ -46,6 +47,11 @@ function DashboardContent({ user, profile, notificationData, children }: Dashboa
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation Progress Bar */}
+      <Suspense fallback={null}>
+        <NavigationProgress />
+      </Suspense>
+      
       {/* Sidebar - Desktop Only */}
       <Sidebar user={user} profile={profile} />
 

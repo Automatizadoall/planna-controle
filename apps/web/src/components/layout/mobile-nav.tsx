@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
@@ -21,38 +22,68 @@ const mobileNavItems = [
 
 export function MobileNav() {
   const pathname = usePathname()
+  const router = useRouter()
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null)
+
+  // Prefetch all mobile nav routes on mount for instant navigation
+  useEffect(() => {
+    mobileNavItems.forEach(item => {
+      router.prefetch(item.href)
+    })
+  }, [router])
+
+  // Reset navigation state when pathname changes
+  useEffect(() => {
+    setNavigatingTo(null)
+  }, [pathname])
+
+  // Handle navigation with optimistic UI feedback
+  const handleClick = useCallback((href: string, e: React.MouseEvent) => {
+    if (pathname !== href) {
+      setNavigatingTo(href)
+    }
+  }, [pathname])
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/50 bg-background/80 backdrop-blur-xl lg:hidden safe-area-bottom">
       <div className="flex items-center justify-around px-2 py-1 pb-[env(safe-area-inset-bottom,8px)]">
         {mobileNavItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
+          const isNavigating = navigatingTo === item.href
           const Icon = item.icon
 
           return (
             <Link
               key={item.name}
               href={item.href}
+              prefetch={true}
+              onClick={(e) => handleClick(item.href, e)}
               className={cn(
                 'relative flex flex-col items-center justify-center min-w-[56px] py-2 px-1 rounded-xl transition-all duration-200 active:scale-95',
-                isActive
+                isActive || isNavigating
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
               {/* Indicador de ativo */}
-              {isActive && (
-                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-emerald-500" />
+              {(isActive || isNavigating) && (
+                <span 
+                  className={cn(
+                    'absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-emerald-500 transition-all',
+                    isNavigating && 'animate-pulse'
+                  )} 
+                />
               )}
               
               {/* Ícone com fundo quando ativo */}
               <div className={cn(
                 'flex items-center justify-center w-10 h-10 rounded-xl transition-all',
-                isActive && 'bg-emerald-100 dark:bg-emerald-900/40'
+                (isActive || isNavigating) && 'bg-emerald-100 dark:bg-emerald-900/40'
               )}>
                 <Icon className={cn(
                   'h-5 w-5 transition-transform',
-                  isActive && 'scale-110'
+                  (isActive || isNavigating) && 'scale-110',
+                  isNavigating && 'animate-pulse'
                 )} />
               </div>
               

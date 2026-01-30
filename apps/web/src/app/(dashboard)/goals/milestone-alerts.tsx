@@ -1,11 +1,14 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { X, Trophy, Target, PartyPopper } from 'lucide-react'
-import Confetti from 'react-confetti'
 import { CategoryIcon } from '@/lib/category-icons'
+
+// Lazy load confetti - só carrega quando meta é concluída
+const Confetti = dynamic(() => import('react-confetti'), { ssr: false })
 
 interface Goal {
   id: string

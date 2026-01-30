@@ -1,13 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { FileDown, Loader2 } from 'lucide-react'
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
-import { Chart, ArcElement, Tooltip, Legend, PieController } from 'chart.js'
 
-Chart.register(ArcElement, Tooltip, Legend, PieController)
+// Tipos para lazy loading
+type jsPDFType = typeof import('jspdf').default
+type ChartType = typeof import('chart.js').Chart
 
 interface CategoryData {
   name: string
@@ -29,8 +28,9 @@ interface ExportPDFButtonProps {
 const formatCurrency = (v: number) => 
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v)
 
-// Helper to generate pie chart as base64 image
+// Helper to generate pie chart as base64 image (lazy loads Chart.js)
 async function generatePieChart(
+  Chart: ChartType,
   data: CategoryData[],
   title: string,
   colors: string[]
@@ -81,12 +81,30 @@ async function generatePieChart(
 
 export function ExportPDFButton(props: ExportPDFButtonProps) {
   const [loading, setLoading] = useState(false)
+  const chartLibRef = useRef<ChartType | null>(null)
   const { period, startDate, endDate, totalIncome, totalExpenses, 
           transactionCount, expensesByCategory, incomeByCategory } = props
 
   async function handleExport() {
     setLoading(true)
     try {
+      // Lazy load jsPDF, autoTable e Chart.js apenas quando necessário
+      const [
+        { default: jsPDF },
+        { default: autoTable },
+        { Chart, ArcElement, Tooltip, Legend, PieController }
+      ] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+        import('chart.js')
+      ])
+
+      // Registrar componentes do Chart.js (apenas uma vez)
+      if (!chartLibRef.current) {
+        Chart.register(ArcElement, Tooltip, Legend, PieController)
+        chartLibRef.current = Chart
+      }
+
       const doc = new jsPDF()
       const w = doc.internal.pageSize.getWidth()
       
@@ -128,6 +146,7 @@ export function ExportPDFButton(props: ExportPDFButtonProps) {
           '#22C55E', '#10B981', '#14B8A6', '#06B6D4', '#0EA5E9',
         ]
         const expenseChart = await generatePieChart(
+          chartLibRef.current!,
           expensesByCategory.slice(0, 8),
           '',
           expenseColors
@@ -170,6 +189,7 @@ export function ExportPDFButton(props: ExportPDFButtonProps) {
           '#6366F1', '#8B5CF6', '#A855F7', '#D946EF', '#EC4899',
         ]
         const incomeChart = await generatePieChart(
+          chartLibRef.current!,
           incomeByCategory.slice(0, 8),
           '',
           incomeColors

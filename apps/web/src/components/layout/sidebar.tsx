@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useCallback, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@mentoria/database'
 import { cn } from '@/lib/utils'
@@ -48,7 +49,17 @@ const secondaryNavigation = [{ name: 'Configurações', href: '/settings', icon:
 
 export function Sidebar({ user, profile }: SidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const { isCollapsed, toggle } = useSidebar()
+  const [prefetchedRoutes, setPrefetchedRoutes] = useState<Set<string>>(new Set())
+
+  // Prefetch on hover for instant navigation
+  const handleMouseEnter = useCallback((href: string) => {
+    if (!prefetchedRoutes.has(href)) {
+      router.prefetch(href)
+      setPrefetchedRoutes(prev => new Set(prev).add(href))
+    }
+  }, [router, prefetchedRoutes])
 
   return (
     <TooltipProvider delayDuration={0}>
@@ -88,6 +99,8 @@ export function Sidebar({ user, profile }: SidebarProps) {
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={true}
+                  onMouseEnter={() => handleMouseEnter(item.href)}
                   className={cn(
                     'group flex items-center rounded-lg transition-all duration-200',
                     isCollapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5',
@@ -134,6 +147,8 @@ export function Sidebar({ user, profile }: SidebarProps) {
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={true}
+                  onMouseEnter={() => handleMouseEnter(item.href)}
                   className={cn(
                     'group flex items-center rounded-lg transition-all duration-200',
                     isCollapsed ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5',

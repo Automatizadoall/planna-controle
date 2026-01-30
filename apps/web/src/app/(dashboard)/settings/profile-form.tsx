@@ -64,7 +64,6 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
     const fileName = `${user.id}-${Date.now()}.${ext}`;
     
     setUploadLoading(true);
-    console.log('[Avatar Upload] Iniciando upload...', { fileName, fileSize: file.size, fileType: file.type });
 
     const { data, error } = await supabase.storage
       .from('avatars')
@@ -80,13 +79,9 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
       return null;
     }
 
-    console.log('[Avatar Upload] Upload bem sucedido:', data);
-
     const { data: urlData } = supabase.storage
       .from('avatars')
       .getPublicUrl(fileName);
-
-    console.log('[Avatar Upload] URL pública:', urlData?.publicUrl);
     
     setUploadLoading(false);
     return urlData?.publicUrl || null;
@@ -108,7 +103,6 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
       const fileName = parts[parts.length - 1];
       
       if (fileName) {
-        console.log('[Avatar Remove] Removendo arquivo:', fileName);
         const { error } = await supabase.storage.from('avatars').remove([fileName]);
         if (error) {
           console.error('[Avatar Remove] Erro ao remover:', error);
