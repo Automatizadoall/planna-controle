@@ -86,21 +86,21 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
   if (recurring.length === 0) {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg">Proximas Recorrentes</CardTitle>
-          <Button variant="ghost" size="sm" asChild>
+        <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">Próximas Recorrentes</CardTitle>
+          <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8 px-2 sm:px-3" asChild>
             <Link href="/recurring">
-              Ver todas <ArrowRight className="ml-1 h-4 w-4" />
+              Ver todas <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
             </Link>
           </Button>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
-              <Repeat className="h-6 w-6 text-muted-foreground" />
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex flex-col items-center justify-center py-4 sm:py-6 text-center">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-muted mb-2 sm:mb-3">
+              <Repeat className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
             </div>
-            <p className="text-sm text-muted-foreground">Nenhuma recorrente</p>
-            <p className="text-xs text-muted-foreground/70">Crie despesas/receitas fixas</p>
+            <p className="text-xs sm:text-sm text-muted-foreground">Nenhuma recorrente</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground/70">Crie despesas/receitas fixas</p>
           </div>
         </CardContent>
       </Card>
@@ -113,21 +113,22 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
 
   return (
     <Card className={dueCount > 0 ? 'border-amber-200 dark:border-amber-800' : ''}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Calendar className={cn('h-5 w-5', dueCount > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-blue-500 dark:text-blue-400')} />
-          Proximas Recorrentes
+      <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 sm:px-6">
+        <CardTitle className="text-base sm:text-lg flex items-center gap-1.5 sm:gap-2">
+          <Calendar className={cn('h-4 w-4 sm:h-5 sm:w-5', dueCount > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-blue-500 dark:text-blue-400')} />
+          <span className="truncate">Próximas Recorrentes</span>
         </CardTitle>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8 px-2 sm:px-3 flex-shrink-0" asChild>
           <Link href="/recurring">
-            Ver todas <ArrowRight className="ml-1 h-4 w-4" />
+            <span className="hidden sm:inline">Ver todas</span>
+            <ArrowRight className="sm:ml-1 h-3 w-3 sm:h-4 sm:w-4" />
           </Link>
         </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         {dueCount > 0 && (
-          <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-3 py-2 mb-3">
-            <span>⚠️ {dueCount} pendente(s) para lancar</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 mb-2 sm:mb-3">
+            <span>⚠️ {dueCount} pendente(s) para lançar</span>
           </div>
         )}
 
@@ -139,13 +140,13 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
                 onClick={goToPrev}
                 className="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
               >
-                <ChevronUp className="h-4 w-4" />
+                <ChevronUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
               <button
                 onClick={goToNext}
                 className="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground transition-colors"
               >
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </button>
             </div>
           )}
@@ -153,19 +154,19 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
           {/* Recurring Card */}
           <div
             className={cn(
-              'rounded-xl border p-4 pr-8 transition-all duration-300',
+              'rounded-xl border p-3 sm:p-4 pr-7 sm:pr-8 transition-all duration-300',
               due && 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20',
               isAnimating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
             )}
           >
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <CategoryIcon icon={currentItem.category?.icon || ''} className="text-xl" />
-                <span className="font-medium text-foreground">{currentItem.description}</span>
+            <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+                <CategoryIcon icon={currentItem.category?.icon || ''} className="text-lg sm:text-xl flex-shrink-0" />
+                <span className="text-sm sm:text-base font-medium text-foreground truncate">{currentItem.description}</span>
               </div>
               <p
                 className={cn(
-                  'text-sm font-bold',
+                  'text-xs sm:text-sm font-bold flex-shrink-0 ml-2',
                   currentItem.type === 'expense' ? 'text-red-500' : 'text-emerald-500'
                 )}
               >
@@ -174,14 +175,14 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
               </p>
             </div>
             
-            <div className="flex items-center justify-between mt-2">
-              <p className={cn('text-sm', due ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-muted-foreground')}>
+            <div className="flex items-center justify-between mt-1.5 sm:mt-2">
+              <p className={cn('text-xs sm:text-sm', due ? 'text-amber-600 dark:text-amber-400 font-medium' : 'text-muted-foreground')}>
                 {formatNextOccurrence(currentItem.next_occurrence)}
               </p>
               
               {/* Dots indicator */}
               {recurring.length > 1 && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                   {recurring.map((_, index) => (
                     <button
                       key={index}
@@ -195,7 +196,7 @@ export function UpcomingRecurring({ recurring }: UpcomingRecurringProps) {
                       className={cn(
                         'h-1.5 rounded-full transition-all duration-300',
                         index === currentIndex 
-                          ? 'w-4 bg-blue-500' 
+                          ? 'w-3 sm:w-4 bg-blue-500' 
                           : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                       )}
                     />

@@ -62,21 +62,21 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
   if (alerts.length === 0) {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg">Alertas de Orcamento</CardTitle>
-          <Button variant="ghost" size="sm" asChild>
+        <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 sm:px-6">
+          <CardTitle className="text-base sm:text-lg">Alertas de Orçamento</CardTitle>
+          <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8 px-2 sm:px-3" asChild>
             <Link href="/budgets">
-              Ver todos <ArrowRight className="ml-1 h-4 w-4" />
+              Ver todos <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
             </Link>
           </Button>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-3">
-              <CheckCircle className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+        <CardContent className="px-3 sm:px-6">
+          <div className="flex flex-col items-center justify-center py-4 sm:py-6 text-center">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-2 sm:mb-3">
+              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Tudo sob controle!</p>
-            <p className="text-xs text-muted-foreground">Nenhum orcamento em alerta</p>
+            <p className="text-xs sm:text-sm font-medium text-emerald-600 dark:text-emerald-400">Tudo sob controle!</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Nenhum orçamento em alerta</p>
           </div>
         </CardContent>
       </Card>
@@ -87,18 +87,19 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
 
   return (
     <Card className="border-amber-200 dark:border-amber-800">
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <AlertTriangle className="h-5 w-5 text-amber-500 dark:text-amber-400" />
-          Alertas de Orcamento
+      <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 sm:px-6">
+        <CardTitle className="text-base sm:text-lg flex items-center gap-1.5 sm:gap-2">
+          <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500 dark:text-amber-400" />
+          <span className="truncate">Alertas de Orçamento</span>
         </CardTitle>
-        <Button variant="ghost" size="sm" asChild>
+        <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8 px-2 sm:px-3 flex-shrink-0" asChild>
           <Link href="/budgets">
-            Ver todos <ArrowRight className="ml-1 h-4 w-4" />
+            <span className="hidden sm:inline">Ver todos</span>
+            <ArrowRight className="sm:ml-1 h-3 w-3 sm:h-4 sm:w-4" />
           </Link>
         </Button>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-3 sm:px-6">
         <div className="relative">
           {alerts.length > 1 && (
             <div className="absolute -right-1 top-1/2 -translate-y-1/2 flex flex-col gap-0.5 z-10">
@@ -119,20 +120,20 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
 
           <div
             className={cn(
-              'rounded-xl border p-4 pr-8 transition-all duration-300',
+              'rounded-xl border p-3 sm:p-4 pr-7 sm:pr-8 transition-all duration-300',
               currentAlert.status === 'exceeded' && 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20',
               currentAlert.status === 'warning' && 'border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20',
               isAnimating ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'
             )}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <CategoryIcon icon={currentAlert.category_icon} className="text-xl" />
-                <span className="font-medium text-foreground">{currentAlert.category_name}</span>
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
+                <CategoryIcon icon={currentAlert.category_icon} className="text-lg sm:text-xl flex-shrink-0" />
+                <span className="text-sm sm:text-base font-medium text-foreground truncate">{currentAlert.category_name}</span>
               </div>
               <span
                 className={cn(
-                  'text-sm font-bold px-2.5 py-0.5 rounded-full',
+                  'text-xs sm:text-sm font-bold px-2 sm:px-2.5 py-0.5 rounded-full flex-shrink-0 ml-2',
                   currentAlert.status === 'exceeded' && 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
                   currentAlert.status === 'warning' && 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
                 )}
@@ -141,7 +142,7 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
               </span>
             </div>
             
-            <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
+            <div className="h-2 sm:h-2.5 w-full rounded-full bg-muted overflow-hidden">
               <div
                 className={cn(
                   'h-full rounded-full transition-all duration-500 ease-out',
@@ -152,13 +153,13 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
               />
             </div>
             
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-sm text-muted-foreground">
+            <div className="flex items-center justify-between mt-1.5 sm:mt-2">
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">
                 {formatCurrency(currentAlert.spent)} de {formatCurrency(currentAlert.limit_amount)}
               </p>
               
               {alerts.length > 1 && (
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                   {alerts.map((_, index) => (
                     <button
                       key={index}
@@ -172,7 +173,7 @@ export function BudgetAlerts({ alerts }: BudgetAlertsProps) {
                       className={cn(
                         'h-1.5 rounded-full transition-all duration-300',
                         index === currentIndex 
-                          ? 'w-4 bg-amber-500' 
+                          ? 'w-3 sm:w-4 bg-amber-500' 
                           : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
                       )}
                     />

@@ -62,44 +62,44 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg">Transações Recentes</CardTitle>
-        <Button variant="ghost" size="sm" asChild>
+      <CardHeader className="flex flex-row items-center justify-between px-3 sm:px-6">
+        <CardTitle className="text-base sm:text-lg">Transações Recentes</CardTitle>
+        <Button variant="ghost" size="sm" className="text-xs sm:text-sm h-8 px-2 sm:px-3" asChild>
           <Link href="/transactions">
-            Ver todas <ArrowRight className="ml-1 h-4 w-4" />
+            Ver todas <ArrowRight className="ml-1 h-3 w-3 sm:h-4 sm:w-4" />
           </Link>
         </Button>
       </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
+      <CardContent className="px-3 sm:px-6">
+        <div className="space-y-2 sm:space-y-3">
           {transactions.map((transaction) => (
             <div
               key={transaction.id}
-              className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
+              className="flex items-center justify-between rounded-lg border p-2 sm:p-3 hover:bg-accent transition-colors"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                 {/* Category Icon */}
                 <div
                   className={cn(
-                    'flex h-10 w-10 items-center justify-center rounded-lg',
+                    'flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-lg flex-shrink-0',
                     transaction.type === 'income' && 'bg-emerald-100 dark:bg-emerald-900/30',
                     transaction.type === 'expense' && 'bg-red-100 dark:bg-red-900/30',
                     transaction.type === 'transfer' && 'bg-blue-100 dark:bg-blue-900/30'
                   )}
                 >
                   {transaction.category?.icon ? (
-                    <CategoryIcon icon={transaction.category.icon} className="text-lg" />
+                    <CategoryIcon icon={transaction.category.icon} className="text-sm sm:text-lg" />
                   ) : (
                     getIcon(transaction.type)
                   )}
                 </div>
 
                 {/* Details */}
-                <div>
-                  <p className="font-medium text-foreground">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm sm:text-base font-medium text-foreground truncate">
                     {transaction.description || transaction.category?.name || 'Transação'}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                     {transaction.category?.name || 'Sem categoria'} • {formatDate(transaction.date)}
                   </p>
                 </div>
@@ -108,7 +108,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
               {/* Amount */}
               <p
                 className={cn(
-                  'font-semibold',
+                  'text-sm sm:text-base font-semibold flex-shrink-0 ml-2',
                   transaction.type === 'income' && 'text-emerald-600 dark:text-emerald-400',
                   transaction.type === 'expense' && 'text-red-600 dark:text-red-400',
                   transaction.type === 'transfer' && 'text-blue-600 dark:text-blue-400'

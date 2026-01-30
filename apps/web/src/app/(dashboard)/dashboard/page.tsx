@@ -143,11 +143,11 @@ export default async function DashboardPage() {
   const recentTransactions = transactions?.slice(0, 5) || []
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground">
           Visão geral das suas finanças em {now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
         </p>
       </div>
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
       />
 
       {/* Charts Row */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         <ExpensesByCategory data={expensesByCategoryArray} total={monthlyExpenses} />
         <IncomeVsExpenses data={monthlyData} />
       </div>
