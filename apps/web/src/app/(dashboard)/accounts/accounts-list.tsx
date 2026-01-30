@@ -107,30 +107,30 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
 
   return (
     <Card className={`${isArchived ? 'opacity-60' : ''} ${account.is_default ? 'ring-2 ring-emerald-500/50' : ''}`}>
-      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-xl">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 p-3 sm:p-6 sm:pb-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-lg sm:text-xl flex-shrink-0">
             {icon}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <CardTitle className="text-base font-semibold">{account.name}</CardTitle>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <CardTitle className="text-sm sm:text-base font-semibold truncate">{account.name}</CardTitle>
               {account.is_default && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  <Star className="h-3 w-3 fill-current" />
-                  Padrão
+                <span className="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
+                  <span className="hidden sm:inline">Padrão</span>
                 </span>
               )}
             </div>
-            <p className="text-xs text-muted-foreground">{typeLabel}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">{typeLabel}</p>
           </div>
         </div>
 
         {/* Actions Menu */}
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <button
             onClick={() => setShowActions(!showActions)}
-            className="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground"
+            className="p-1.5 sm:p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground touch-manipulation"
           >
             <MoreHorizontal className="h-4 w-4" />
           </button>
@@ -138,7 +138,7 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
           {showActions && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowActions(false)} />
-              <div className="absolute right-0 z-20 mt-1 w-44 rounded-lg border bg-card shadow-lg py-1">
+              <div className="absolute right-0 z-20 mt-1 w-40 sm:w-44 rounded-lg border bg-card shadow-lg py-1">
                 {!isArchived ? (
                   <>
                     <button
@@ -146,7 +146,7 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
                         onEdit?.()
                         setShowActions(false)
                       }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent"
+                      className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-foreground hover:bg-accent active:bg-accent/80"
                     >
                       <Pencil className="h-4 w-4" />
                       Editar
@@ -157,10 +157,10 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
                           onSetDefault?.()
                           setShowActions(false)
                         }}
-                        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent"
+                        className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-foreground hover:bg-accent active:bg-accent/80"
                       >
                         <Star className="h-4 w-4" />
-                        Definir como padrão
+                        Definir padrão
                       </button>
                     )}
                     <button
@@ -168,7 +168,7 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
                         onArchive?.()
                         setShowActions(false)
                       }}
-                      className="flex w-full items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent"
+                      className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-foreground hover:bg-accent active:bg-accent/80"
                     >
                       <Archive className="h-4 w-4" />
                       Arquivar
@@ -180,7 +180,7 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
                       onUnarchive?.()
                       setShowActions(false)
                     }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent"
+                    className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-foreground hover:bg-accent active:bg-accent/80"
                   >
                     <RotateCcw className="h-4 w-4" />
                     Restaurar
@@ -192,16 +192,16 @@ function AccountCard({ account, isArchived, onEdit, onArchive, onUnarchive, onSe
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
         <p
-          className={`text-2xl font-bold ${
+          className={`text-xl sm:text-2xl font-bold ${
             Number(account.balance) >= 0 ? 'text-foreground' : 'text-expense'
           }`}
         >
           {formatCurrency(Number(account.balance))}
         </p>
         {isArchived && (
-          <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
+          <p className="text-[10px] sm:text-xs text-muted-foreground mt-2 flex items-center gap-1">
             <Archive className="h-3 w-3" />
             Arquivada
           </p>

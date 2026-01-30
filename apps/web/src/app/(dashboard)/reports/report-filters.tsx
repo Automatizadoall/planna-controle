@@ -52,10 +52,10 @@ export function ReportFilters({ currentPeriod, startDate, endDate }: ReportFilte
 
   return (
     <Card>
-      <CardContent className="p-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <CardContent className="p-3 sm:p-4">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {/* Period Buttons */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {periods.map((period) => (
               <Button
                 key={period.id}
@@ -63,6 +63,7 @@ export function ReportFilters({ currentPeriod, startDate, endDate }: ReportFilte
                 size="sm"
                 onClick={() => handlePeriodChange(period.id)}
                 className={cn(
+                  'h-8 px-2 sm:px-3 text-xs sm:text-sm',
                   currentPeriod === period.id 
                     ? 'bg-emerald-600 hover:bg-emerald-700 text-white' 
                     : 'border border-border hover:bg-accent text-foreground'
@@ -73,34 +74,37 @@ export function ReportFilters({ currentPeriod, startDate, endDate }: ReportFilte
             ))}
           </div>
 
-          {/* Custom Date Range */}
-          {currentPeriod === 'custom' && (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm text-muted-foreground">De:</Label>
-                <DatePicker
-                  value={startDate}
-                  onChange={(value) => handleCustomDateChange('startDate', value)}
-                  className="w-auto"
-                />
+          {/* Custom Date Range + Current Period Display */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            {/* Custom Date Range */}
+            {currentPeriod === 'custom' && (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">De:</Label>
+                  <DatePicker
+                    value={startDate}
+                    onChange={(value) => handleCustomDateChange('startDate', value)}
+                    className="w-auto"
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">Até:</Label>
+                  <DatePicker
+                    value={endDate}
+                    onChange={(value) => handleCustomDateChange('endDate', value)}
+                    className="w-auto"
+                  />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Label className="text-sm text-muted-foreground">Até:</Label>
-                <DatePicker
-                  value={endDate}
-                  onChange={(value) => handleCustomDateChange('endDate', value)}
-                  className="w-auto"
-                />
-              </div>
-            </div>
-          )}
+            )}
 
-          {/* Current Period Display */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" />
-            <span>
-              {formatDateDisplay(startDate)} - {formatDateDisplay(endDate)}
-            </span>
+            {/* Current Period Display */}
+            <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+              <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              <span>
+                {formatDateDisplay(startDate)} - {formatDateDisplay(endDate)}
+              </span>
+            </div>
           </div>
         </div>
       </CardContent>

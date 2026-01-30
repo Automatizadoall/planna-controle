@@ -104,24 +104,24 @@ function CategoryCard({ category, isSystem, onEdit, onDelete }: CategoryCardProp
   return (
     <Card
       className={cn(
-        'transition-all hover:shadow-md',
+        'transition-all hover:shadow-md relative overflow-hidden',
         isSystem && 'opacity-75'
       )}
     >
-      <CardContent className="flex items-center justify-between p-4">
-        <div className="flex items-center gap-3">
+      <CardContent className="flex items-center justify-between gap-2 p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           {/* Icon with color background */}
           <div
-            className="flex h-10 w-10 items-center justify-center rounded-lg"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg flex-shrink-0"
             style={{ backgroundColor: `${category.color ?? ''}20` }}
           >
-            <CategoryIcon icon={category.icon ?? ''} className="text-xl" />
+            <CategoryIcon icon={category.icon ?? ''} className="text-lg sm:text-xl" />
           </div>
 
           {/* Name */}
-          <div>
-            <p className="font-medium text-foreground">{category.name}</p>
-            <p className="text-xs text-muted-foreground">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm sm:text-base font-medium text-foreground truncate">{category.name}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">
               {isSystem ? 'Sistema' : 'Personalizada'}
             </p>
           </div>
@@ -129,11 +129,11 @@ function CategoryCard({ category, isSystem, onEdit, onDelete }: CategoryCardProp
 
         {/* Actions */}
         {!isSystem && (
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={onEdit}>
+          <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+            <Button variant="ghost" size="icon" onClick={onEdit} className="h-8 w-8 sm:h-9 sm:w-9">
               <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={onDelete}>
+            <Button variant="ghost" size="icon" onClick={onDelete} className="h-8 w-8 sm:h-9 sm:w-9">
               <Trash2 className="h-4 w-4 text-muted-foreground hover:text-red-500" />
             </Button>
           </div>

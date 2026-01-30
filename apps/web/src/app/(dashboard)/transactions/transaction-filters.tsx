@@ -76,12 +76,12 @@ export function TransactionFilters({ accounts, categories }: TransactionFiltersP
 
       {/* Filter Controls */}
       {showFilters && (
-        <div className="grid gap-4 rounded-xl border border-border bg-card p-4 sm:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 rounded-xl border border-border bg-card p-3 sm:p-4 grid-cols-1 sm:grid-cols-3">
           {/* Type Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Tipo</label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm font-medium text-foreground">Tipo</label>
             <Select value={type} onValueChange={(value) => updateFilter('type', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 sm:h-10 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -94,10 +94,10 @@ export function TransactionFilters({ accounts, categories }: TransactionFiltersP
           </div>
 
           {/* Account Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Conta</label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm font-medium text-foreground">Conta</label>
             <Select value={accountId} onValueChange={(value) => updateFilter('account', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 sm:h-10 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -112,10 +112,10 @@ export function TransactionFilters({ accounts, categories }: TransactionFiltersP
           </div>
 
           {/* Category Filter */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">Categoria</label>
+          <div className="space-y-1.5 sm:space-y-2">
+            <label className="text-xs sm:text-sm font-medium text-foreground">Categoria</label>
             <Select value={categoryId} onValueChange={(value) => updateFilter('category', value)}>
-              <SelectTrigger>
+              <SelectTrigger className="h-9 sm:h-10 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -123,7 +123,7 @@ export function TransactionFilters({ accounts, categories }: TransactionFiltersP
                 {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
                     <span className="flex items-center gap-2">
-                      <CategoryIcon icon={category.icon ?? ''} className="text-lg" />
+                      <CategoryIcon icon={category.icon ?? ''} className="text-base sm:text-lg" />
                       <span>{category.name}</span>
                     </span>
                   </SelectItem>

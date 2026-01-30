@@ -114,25 +114,25 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
       'transition-all hover:shadow-lg',
       isCompleted && 'bg-emerald-50/50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
     )}>
-      <CardContent className="p-5">
+      <CardContent className="p-3 sm:p-5">
         {/* Header */}
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
+        <div className="flex items-start justify-between gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
             <div
-              className="flex h-12 w-12 items-center justify-center rounded-xl"
+              className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-lg sm:rounded-xl flex-shrink-0"
               style={{ backgroundColor: `${goalColor}20`, color: goalColor }}
             >
               {isCompleted ? (
-                <Trophy className="h-6 w-6" />
+                <Trophy className="h-5 w-5 sm:h-6 sm:w-6" />
               ) : (
-                <CategoryIcon icon={goal.icon || 'lucide:target'} className="h-6 w-6" />
+                <CategoryIcon icon={goal.icon || 'lucide:target'} className="h-5 w-5 sm:h-6 sm:w-6" />
               )}
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">{goal.name}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm sm:text-base font-semibold text-foreground truncate">{goal.name}</h3>
               {goal.target_date && (
-                <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
+                <p className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground">
+                  <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   {formatRemainingTime(daysRemaining)}
                 </p>
               )}
@@ -141,11 +141,11 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
 
           {/* Actions */}
           {!isCompleted && (
-            <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" onClick={onEdit}>
+            <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+              <Button variant="ghost" size="icon" onClick={onEdit} className="h-8 w-8 sm:h-9 sm:w-9">
                 <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={onDelete}>
+              <Button variant="ghost" size="icon" onClick={onDelete} className="h-8 w-8 sm:h-9 sm:w-9">
                 <Trash2 className="h-4 w-4 text-muted-foreground hover:text-red-500" />
               </Button>
             </div>
@@ -153,22 +153,22 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
         </div>
 
         {/* Progress */}
-        <div className="mt-4">
-          <div className="flex justify-between text-sm mb-2">
+        <div className="mt-3 sm:mt-4">
+          <div className="flex justify-between text-xs sm:text-sm mb-1.5 sm:mb-2">
             <span className="font-semibold text-foreground">{formatCurrency(current)}</span>
             <span className="text-muted-foreground">de {formatCurrency(target)}</span>
           </div>
-          <div className="h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+          <div className="h-2 sm:h-3 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
             <div
-              className="h-3 rounded-full transition-all bg-emerald-500"
+              className="h-full rounded-full transition-all bg-emerald-500"
               style={{ width: `${percentage}%` }}
             />
           </div>
-          <div className="flex justify-between items-center mt-2">
-            <span className="text-xs text-muted-foreground">
+          <div className="flex justify-between items-center mt-1.5 sm:mt-2">
+            <span className="text-[10px] sm:text-xs text-muted-foreground">
               {isCompleted ? (
                 <span className="text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                  <Trophy className="h-3 w-3" />
+                  <Trophy className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                   Meta alcançada!
                 </span>
               ) : remaining > 0 ? (
@@ -178,7 +178,7 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
               )}
             </span>
             <span className={cn(
-              'text-sm font-bold',
+              'text-xs sm:text-sm font-bold',
               percentage >= 100 ? 'text-emerald-600 dark:text-emerald-400' : 'text-foreground'
             )}>
               {percentage}%
@@ -188,7 +188,7 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
 
         {/* Monthly suggestion */}
         {!isCompleted && monthlySavings && monthlySavings > 0 && (
-          <div className="mt-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 px-3 py-2 text-xs text-blue-700 dark:text-blue-300">
+          <div className="mt-2 sm:mt-3 rounded-lg bg-blue-50 dark:bg-blue-900/30 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs text-blue-700 dark:text-blue-300">
             💡 Economize <strong>{formatCurrency(monthlySavings)}/mês</strong> para atingir no prazo
           </div>
         )}
@@ -196,11 +196,11 @@ function GoalCard({ goal, isCompleted, onEdit, onDelete, onContribute }: GoalCar
         {/* Add Contribution Button */}
         {!isCompleted && (
           <Button
-            className="w-full mt-4"
+            className="w-full mt-3 sm:mt-4 h-9 sm:h-10 text-sm"
             variant="outline"
             onClick={onContribute}
           >
-            <Plus className="mr-2 h-4 w-4" />
+            <Plus className="mr-1.5 sm:mr-2 h-4 w-4" />
             Adicionar Valor
           </Button>
         )}

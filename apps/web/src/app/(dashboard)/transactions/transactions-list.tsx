@@ -130,23 +130,23 @@ function TransactionCard({ transaction, onEdit }: TransactionCardProps) {
 
   return (
     <Card className={cn('transition-all hover:shadow-md', isDeleting && 'opacity-50')}>
-      <CardContent className="flex items-center justify-between p-4">
-        <div className="flex items-center gap-3">
+      <CardContent className="flex items-center justify-between gap-2 p-3 sm:p-4">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
           {/* Icon */}
-          <div className={cn('flex h-10 w-10 items-center justify-center rounded-full', typeColorClass)}>
+          <div className={cn('flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full flex-shrink-0', typeColorClass)}>
             {transaction.category?.icon ? (
-              <CategoryIcon icon={transaction.category.icon} className="text-lg" />
+              <CategoryIcon icon={transaction.category.icon} className="text-base sm:text-lg" />
             ) : (
-              <TypeIcon className="h-5 w-5" />
+              <TypeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
             )}
           </div>
 
           {/* Details */}
-          <div>
-            <p className="font-medium text-foreground">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm sm:text-base font-medium text-foreground truncate">
               {transaction.description || transaction.category?.name || 'Sem descrição'}
             </p>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground truncate">
               {transaction.category?.name && (
                 <span>{transaction.category.name} • </span>
               )}
@@ -158,9 +158,9 @@ function TransactionCard({ transaction, onEdit }: TransactionCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           {/* Amount */}
-          <span className={cn('font-semibold', amountColorClass)}>
+          <span className={cn('text-sm sm:text-base font-semibold whitespace-nowrap', amountColorClass)}>
             {transaction.type === 'income' ? '+' : transaction.type === 'expense' ? '-' : ''}
             {formatCurrency(Number(transaction.amount))}
           </span>
@@ -169,22 +169,22 @@ function TransactionCard({ transaction, onEdit }: TransactionCardProps) {
           <div className="relative">
             <button
               onClick={() => setShowActions(!showActions)}
-              className="p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground"
+              className="p-1.5 sm:p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground touch-manipulation"
               disabled={isDeleting}
             >
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="h-4 w-4 sm:h-4 sm:w-4" />
             </button>
 
             {showActions && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowActions(false)} />
-                <div className="absolute right-0 z-20 mt-1 w-32 rounded-lg border bg-card shadow-lg py-1">
+                <div className="absolute right-0 z-20 mt-1 w-28 sm:w-32 rounded-lg border bg-card shadow-lg py-1">
                   <button
                     onClick={() => {
                       onEdit()
                       setShowActions(false)
                     }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-foreground hover:bg-accent"
+                    className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-foreground hover:bg-accent active:bg-accent/80"
                   >
                     <Pencil className="h-4 w-4" />
                     Editar
@@ -194,7 +194,7 @@ function TransactionCard({ transaction, onEdit }: TransactionCardProps) {
                       handleDelete()
                       setShowActions(false)
                     }}
-                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    className="flex w-full items-center gap-2 px-3 py-2.5 sm:py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 active:bg-red-100"
                   >
                     <Trash2 className="h-4 w-4" />
                     Excluir

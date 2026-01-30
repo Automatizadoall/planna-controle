@@ -147,52 +147,63 @@ function RecurringCard({
         upcoming && !due && !isInactive && 'border-blue-200 dark:border-blue-800'
       )}
     >
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between gap-4">
-          {/* Left: Icon + Details */}
-          <div className="flex items-center gap-3 flex-1 min-w-0">
+      <CardContent className="p-3 sm:p-4">
+        {/* Mobile Layout: Stack vertically */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          {/* Top Row: Icon + Details + Amount */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
             {/* Category Icon */}
             <div
               className={cn(
-                'flex h-11 w-11 items-center justify-center rounded-xl shrink-0',
+                'flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-lg sm:rounded-xl shrink-0',
                 isExpense ? 'bg-red-100 dark:bg-red-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'
               )}
             >
               {item.category?.icon ? (
-                <CategoryIcon icon={item.category.icon} className="text-xl" />
+                <CategoryIcon icon={item.category.icon} className="text-base sm:text-xl" />
               ) : isExpense ? (
-                <TrendingDown className="h-5 w-5 text-red-600 dark:text-red-400" />
+                <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 dark:text-red-400" />
               ) : (
-                <TrendingUp className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-600 dark:text-emerald-400" />
               )}
             </div>
 
             {/* Details */}
             <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="font-medium text-foreground truncate">{item.description}</h3>
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <h3 className="text-sm sm:text-base font-medium text-foreground truncate max-w-[150px] sm:max-w-none">{item.description}</h3>
                 {due && !isInactive && (
-                  <span className="shrink-0 flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/40 px-2 py-0.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+                  <span className="shrink-0 flex items-center gap-1 rounded-full bg-amber-100 dark:bg-amber-900/40 px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium text-amber-700 dark:text-amber-300">
                     Pendente
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{item.category?.name || 'Sem categoria'}</span>
-                <span>•</span>
+              <div className="flex items-center gap-1 sm:gap-2 text-[11px] sm:text-sm text-muted-foreground flex-wrap">
                 <span>{frequencyLabels[item.frequency as keyof typeof frequencyLabels]}</span>
-                <span>•</span>
-                <span className="flex items-center gap-1">
-                  {accountTypeIcons[item.account?.type as keyof typeof accountTypeIcons]}
-                  {item.account?.name}
-                </span>
+                <span className="hidden sm:inline">•</span>
+                <span className="hidden sm:inline">{item.category?.name || 'Sem categoria'}</span>
+                {/* Mobile: Show next occurrence inline */}
+                <span className="sm:hidden text-[10px]">• {formatNextOccurrence(item.next_occurrence)}</span>
               </div>
+            </div>
+
+            {/* Amount - Always visible */}
+            <div className="text-right flex-shrink-0">
+              <p
+                className={cn(
+                  'text-sm sm:text-lg font-bold whitespace-nowrap',
+                  isExpense ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'
+                )}
+              >
+                {isExpense ? '-' : '+'}
+                {formatCurrency(Number(item.amount))}
+              </p>
             </div>
           </div>
 
-          {/* Right: Amount + Next + Actions */}
-          <div className="flex items-center gap-4">
-            {/* Next Occurrence */}
+          {/* Bottom Row (Mobile) / Right side (Desktop): Next + Actions */}
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4">
+            {/* Next Occurrence - Desktop only */}
             <div className="hidden sm:block text-right">
               <p className="text-xs text-muted-foreground">Próxima</p>
               <p className={cn(
@@ -203,21 +214,8 @@ function RecurringCard({
               </p>
             </div>
 
-            {/* Amount */}
-            <div className="text-right">
-              <p
-                className={cn(
-                  'text-lg font-bold',
-                  isExpense ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'
-                )}
-              >
-                {isExpense ? '-' : '+'}
-                {formatCurrency(Number(item.amount))}
-              </p>
-            </div>
-
             {/* Actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 sm:gap-1">
               {/* Process Button (only if due) */}
               {due && !isInactive && (
                 <Button
@@ -225,30 +223,30 @@ function RecurringCard({
                   size="sm"
                   onClick={onProcess}
                   disabled={isProcessing}
-                  className="text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30"
+                  className="h-8 px-2 sm:px-3 text-xs sm:text-sm text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30"
                 >
                   {isProcessing ? (
                     <span className="animate-spin">⏳</span>
                   ) : (
                     <>
-                      <CheckCircle className="mr-1 h-4 w-4" />
-                      Lançar
+                      <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Lançar</span>
                     </>
                   )}
                 </Button>
               )}
 
-              <Button variant="ghost" size="icon" onClick={onToggle} title={isInactive ? 'Ativar' : 'Pausar'}>
+              <Button variant="ghost" size="icon" onClick={onToggle} title={isInactive ? 'Ativar' : 'Pausar'} className="h-8 w-8 sm:h-9 sm:w-9">
                 {isInactive ? (
                   <Play className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 ) : (
                   <Pause className="h-4 w-4 text-muted-foreground" />
                 )}
               </Button>
-              <Button variant="ghost" size="icon" onClick={onEdit}>
+              <Button variant="ghost" size="icon" onClick={onEdit} className="h-8 w-8 sm:h-9 sm:w-9">
                 <Pencil className="h-4 w-4 text-muted-foreground hover:text-foreground" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={onDelete}>
+              <Button variant="ghost" size="icon" onClick={onDelete} className="h-8 w-8 sm:h-9 sm:w-9">
                 <Trash2 className="h-4 w-4 text-muted-foreground hover:text-red-500" />
               </Button>
             </div>

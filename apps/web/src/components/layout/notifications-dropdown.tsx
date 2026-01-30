@@ -365,7 +365,7 @@ export function NotificationsDropdown({
             )}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-0 border-border bg-card" align="end">
+        <PopoverContent className="w-[calc(100vw-2rem)] max-w-80 p-0 border-border bg-card" align="end">
           <div className="flex items-center justify-between border-b border-border px-4 py-3 bg-muted/30">
             <h4 className="font-semibold text-foreground">Notificações</h4>
             {notificationCount > 0 && (
