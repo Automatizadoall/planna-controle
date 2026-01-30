@@ -23,8 +23,8 @@ export function MobileNav() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background lg:hidden">
-      <div className="flex items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border/50 bg-background/80 backdrop-blur-xl lg:hidden safe-area-bottom">
+      <div className="flex items-center justify-around px-2 py-1 pb-[env(safe-area-inset-bottom,8px)]">
         {mobileNavItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
           const Icon = item.icon
@@ -34,14 +34,35 @@ export function MobileNav() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex flex-col items-center gap-1 px-3 py-2 text-xs transition-colors',
+                'relative flex flex-col items-center justify-center min-w-[56px] py-2 px-1 rounded-xl transition-all duration-200 active:scale-95',
                 isActive
-                  ? 'text-primary'
+                  ? 'text-emerald-600 dark:text-emerald-400'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <Icon className={cn('h-5 w-5', isActive && 'text-primary')} />
-              <span className={cn(isActive && 'font-medium')}>{item.name}</span>
+              {/* Indicador de ativo */}
+              {isActive && (
+                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-1 rounded-full bg-emerald-500" />
+              )}
+              
+              {/* Ícone com fundo quando ativo */}
+              <div className={cn(
+                'flex items-center justify-center w-10 h-10 rounded-xl transition-all',
+                isActive && 'bg-emerald-100 dark:bg-emerald-900/40'
+              )}>
+                <Icon className={cn(
+                  'h-5 w-5 transition-transform',
+                  isActive && 'scale-110'
+                )} />
+              </div>
+              
+              {/* Label */}
+              <span className={cn(
+                'text-[10px] mt-0.5 transition-all',
+                isActive ? 'font-semibold' : 'font-medium'
+              )}>
+                {item.name}
+              </span>
             </Link>
           )
         })}
