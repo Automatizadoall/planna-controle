@@ -8,11 +8,11 @@ export default function Home() {
         {/* Logo */}
         <div className="mb-8 flex justify-center">
           <Image
-            src="/logo.svg"
+            src="/logo.png"
             alt="Poupefy"
             width={80}
             height={80}
-            className="drop-shadow-lg"
+            className="drop-shadow-lg rounded-2xl"
           />
         </div>
 
