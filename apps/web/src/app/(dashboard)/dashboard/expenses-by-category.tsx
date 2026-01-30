@@ -98,18 +98,18 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
 
   return (
     <Card className="overflow-hidden border-0 shadow-lg bg-gradient-to-br from-card to-card/80">
-      <CardHeader className="pb-2 px-3 sm:px-6">
-        <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-          <div className="p-1 sm:p-1.5 rounded-lg bg-red-500/10">
-            <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500" />
+      <CardHeader className="pb-2 px-2.5 sm:px-6">
+        <CardTitle className="text-sm sm:text-lg flex items-center gap-1.5 sm:gap-2">
+          <div className="p-1 sm:p-1.5 rounded-lg bg-red-500/10 flex-shrink-0">
+            <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
           </div>
-          Despesas por Categoria
+          <span className="truncate">Despesas por Categoria</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0 px-3 sm:px-6">
-        <div className="flex flex-col md:flex-row items-center gap-3 sm:gap-4">
+      <CardContent className="pt-0 px-2.5 sm:px-6">
+        <div className="flex flex-col items-center gap-2 sm:gap-4">
           {/* Chart */}
-          <div className="relative h-[160px] sm:h-[200px] w-full md:w-[45%] flex-shrink-0">
+          <div className="relative h-[140px] sm:h-[200px] w-full max-w-[200px] sm:max-w-none flex-shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <defs>
@@ -128,8 +128,8 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
-                  outerRadius={60}
+                  innerRadius={35}
+                  outerRadius={55}
                   paddingAngle={2}
                   dataKey="value"
                   stroke="none"
@@ -181,7 +181,7 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
           </div>
 
           {/* Legend with progress bars */}
-          <div className="w-full md:w-[55%] space-y-1 sm:space-y-1.5 max-h-[200px] sm:max-h-[250px] overflow-y-auto scrollbar-thin">
+          <div className="w-full space-y-0.5 sm:space-y-1.5 max-h-[150px] sm:max-h-[250px] overflow-y-auto scrollbar-thin">
             {chartData.map((item, idx) => {
               const percentage = Math.round(item.percent * 100)
               const isActive = activeIndex === idx
@@ -190,46 +190,26 @@ export function ExpensesByCategory({ data, total }: ExpensesByCategoryProps) {
                 <div 
                   key={item.name}
                   className={`group p-1.5 sm:p-2 rounded-lg cursor-pointer transition-all duration-200 touch-manipulation ${
-                    isActive ? 'bg-accent/80 scale-[1.01] sm:scale-[1.02]' : 'hover:bg-accent/40 active:bg-accent/60'
+                    isActive ? 'bg-accent/80' : 'hover:bg-accent/40 active:bg-accent/60'
                   }`}
                   onMouseEnter={() => setActiveIndex(idx)}
                   onMouseLeave={() => setActiveIndex(undefined)}
                   onClick={() => handleItemClick(idx)}
                 >
-                  <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1">
                       <div 
-                        className="p-0.5 sm:p-1 rounded-md transition-all duration-200 flex-shrink-0"
-                        style={{ backgroundColor: `${item.color}20` }}
-                      >
-                        <div style={{ color: item.color }}>
-                          <CategoryIcon 
-                            icon={item.icon} 
-                            className="h-3 w-3 sm:h-3.5 sm:w-3.5" 
-                          />
-                        </div>
-                      </div>
-                      <span className="text-xs sm:text-sm font-medium text-foreground truncate">{item.name}</span>
+                        className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-[11px] sm:text-sm font-medium text-foreground truncate">{item.name}</span>
                     </div>
-                    <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-2">
-                      <span className="text-xs sm:text-sm font-semibold text-foreground whitespace-nowrap">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-1">
+                      <span className="text-[11px] sm:text-sm font-semibold text-foreground whitespace-nowrap">
                         {formatCurrency(item.value)}
                       </span>
+                      <span className="text-[10px] sm:text-xs text-muted-foreground">{percentage}%</span>
                     </div>
-                  </div>
-                  {/* Progress bar */}
-                  <div className="h-1 sm:h-1.5 bg-muted/50 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full rounded-full transition-all duration-300"
-                      style={{ 
-                        width: `${percentage}%`,
-                        backgroundColor: item.color,
-                        boxShadow: isActive ? `0 0 8px ${item.color}60` : 'none'
-                      }}
-                    />
-                  </div>
-                  <div className="flex justify-end mt-0.5">
-                    <span className="text-[9px] sm:text-[10px] text-muted-foreground">{percentage}%</span>
                   </div>
                 </div>
               )
